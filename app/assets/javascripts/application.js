@@ -14,6 +14,7 @@
 //= require jquery_ujs
 //= require bootstrap
 
+//= require 'xrtc-1.4.0'
 //= require 'xRtc/Common'
 //= require 'xRtc/Class'
 //= require 'xRtc/CommonError'
