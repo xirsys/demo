@@ -13,4 +13,20 @@
 //= require jquery
 //= require jquery_ujs
 //= require bootstrap
+
+//= require 'xRtc/Common'
+//= require 'xRtc/Class'
+//= require 'xRtc/CommonError'
+//= require 'xRtc/Logger'
+//= require 'xRtc/EventDispatcher'
+//= require 'xRtc/Ajax'
+//= require 'xRtc/ServerConnector'
+//= require 'xRtc/AuthManager'
+//= require 'xRtc/DataChannel'
+//= require 'xRtc/HandshakeController'
+//= require 'xRtc/UserMedia'
+//= require 'xRtc/Connection'
+//= require 'xRtc/Stream'
+//= require 'xRtc/Room'
+
 //= require_tree .
