@@ -13,12 +13,12 @@ class XirsysController < ApplicationController
     path = '/getIceServers'
     fields_string = ''  
     
-    fields = { 'domain'      => url_encode(xirsys_domain),
-               'application' => url_encode(xirsys_application),
+    fields = { 'domain'      => url_encode(@xirsys_domain),
+               'application' => url_encode(@xirsys_application),
                'room'        => url_encode(params[:room]),
                'username'    => url_encode(params[:username]),
-               'ident'       => url_encode(xirsys_ident),
-	             'secret'      => url_encode(xirsys_secret),
+               'ident'       => url_encode(@xirsys_ident),
+	             'secret'      => url_encode(@xirsys_secret),
                'secure'      => '1' }
 
     # URLify the POST data
@@ -49,12 +49,12 @@ class XirsysController < ApplicationController
     path = '/getToken'
     fields_string = ''  
     
-    fields = { 'domain'      => url_encode(xirsys_domain),
-               'application' => url_encode(xirsys_application),
+    fields = { 'domain'      => url_encode(@xirsys_domain),
+               'application' => url_encode(@xirsys_application),
                'room'        => url_encode(params[:room]),
                'username'    => url_encode(params[:username]),
-	             'ident'       => url_encode(xirsys_ident),
-	             'secret'      => url_encode(xirsys_secret),
+	             'ident'       => url_encode(@xirsys_ident),
+	             'secret'      => url_encode(@xirsys_secret),
                'secure'      => '1' }
    
     # URLify the POST data
@@ -85,11 +85,11 @@ class XirsysController < ApplicationController
     path = '/addRoom'
     fields_string = ''
 
-    fields = { 'domain'      => url_encode(xirsys_domain),
-               'application' => url_encode(xirsys_application),
+    fields = { 'domain'      => url_encode(@xirsys_domain),
+               'application' => url_encode(@xirsys_application),
                'room'        => url_encode(params[:room]),
-	             'ident'       => url_encode(xirsys_ident),
-	             'secret'      => url_encode(xirsys_secret),
+	             'ident'       => url_encode(@xirsys_ident),
+	             'secret'      => url_encode(@xirsys_secret),
                'secure'      => '1' }
 
     # URLify the POST data
@@ -113,9 +113,9 @@ class XirsysController < ApplicationController
   
   private
   def store_xirsys_credentials
-    xirsys_domain = ENV['XIRSYS_DOMAIN']
-    xirsys_application = ENV['XIRSYS_APPLICATION']
-    xirsys_ident = ENV['XIRSYS_IDENT']
-    xirsys_secret = ENV['XIRSYS_SECRET']
+    @xirsys_domain = ENV['XIRSYS_DOMAIN']
+    @xirsys_application = ENV['XIRSYS_APPLICATION']
+    @xirsys_ident = ENV['XIRSYS_IDENT']
+    @xirsys_secret = ENV['XIRSYS_SECRET']
   end
 end
