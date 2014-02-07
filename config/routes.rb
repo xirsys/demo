@@ -1,5 +1,5 @@
 XirsysRails::Application.routes.draw do
-  root :to => 'visitors#new'
+  root :to => 'demos#new'
   
   resources :xirsys, defaults: {format: :json} do  
     collection do
