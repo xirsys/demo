@@ -7,8 +7,8 @@
  * establish connections as detailed in the demo HTML files.
  **/
 
-var utils = {};
-(function (utils, xrtc) {
+var oneToOneVideo = {};
+(function (oneToOneVideo, xrtc) {
 	var _av = false,
 		_room = null,
 		_userName = null,
@@ -17,14 +17,19 @@ var utils = {};
 		_localMediaStream = null,
 		_remoteParticipantId = null;
 
-	xrtc.Class.extend(utils, {
+	xrtc.Class.extend(oneToOneVideo, {
 
 		init: function() {
 			// Set middle tier service proxies (on server)
 			// This is the server page which handles the calls 
 			// to the XirSys services
-			xrtc.AuthManager.settings.tokenHandler = "/getToken.php";
-			xrtc.AuthManager.settings.iceHandler = "/getIceServers.php";
+      
+      console.log('init test');
+      
+			xrtc.AuthManager.settings.tokenHandler = "/xirsys/getToken";
+			xrtc.AuthManager.settings.iceHandler = "/xirsys/getIceServers";
+      
+      console.log('init test');
 
 			// Enable logging for sanity's sake
 			xrtc.Logger.enable({ debug: true, warning: true, error: true, test: true });
@@ -73,7 +78,7 @@ var utils = {};
 			_connection = connectionData.connection;
 			_remoteParticipantId = connectionData.userId;
 
-			utils.subscribe( _connection, xrtc.Connection.events );
+			oneToOneVideo.subscribe( _connection, xrtc.Connection.events );
 
 			var data = _connection.getData();
 
@@ -82,21 +87,21 @@ var utils = {};
 				.on( xrtc.Connection.events.remoteStreamAdded, function (data) {
 					data.isLocalStream = false;
 					console.log("adding remote stream");
-					utils.addVideo(data);
-					utils.refreshRoom();
+					oneToOneVideo.addVideo(data);
+					oneToOneVideo.refreshRoom();
 				})
 				// Update users list on state change
 				.on( xrtc.Connection.events.stateChanged, function (state) {
-					utils.refreshRoom();
+					oneToOneVideo.refreshRoom();
 				})
 				// Handler for simple chat demo's data channel
 				.on( xrtc.Connection.events.dataChannelCreated, function (data) {
 					_textChannel = data.channel;
-					utils.subscribe(_textChannel, xrtc.DataChannel.events);
+					oneToOneVideo.subscribe(_textChannel, xrtc.DataChannel.events);
 					_textChannel.on( xrtc.DataChannel.events.message, function(msgData) {
-						utils.addMessage(msgData.userId, msgData.message);
+						oneToOneVideo.addMessage(msgData.userId, msgData.message);
 					});
-					utils.addMessage("SYSTEM", "You are now connected.");
+					oneToOneVideo.addMessage("SYSTEM", "You are now connected.");
 
 				}).on(xrtc.Connection.events.dataChannelCreationError, function(data) {
 					console.log('Failed to create data channel ' + data.channelName + '. Make sure that your Chrome M25 or later with --enable-data-channels flag.');
@@ -129,7 +134,7 @@ var utils = {};
 			console.log('Sending message...', message);
 			if (_textChannel) {
 				_textChannel.send(message);
-				utils.addMessage( _userName, message, true );
+				oneToOneVideo.addMessage( _userName, message, true );
 			} else {
 				console.log('DataChannel is not created. Please, see log.');
 			}
@@ -149,9 +154,9 @@ var utils = {};
 
 			$('#userlist').empty();
 
-			var contacts = utils.convertContacts(_room.getParticipants());
+			var contacts = oneToOneVideo.convertContacts(_room.getParticipants());
 			for (var index = 0, len = contacts.length; index < len; index++) {
-				utils.addParticipant(contacts[index]);
+				oneToOneVideo.addParticipant(contacts[index]);
 			}
 		},
 
@@ -166,7 +171,7 @@ var utils = {};
 
 			for (var i = 0, len = participants.length; i < len; i++) {
 				var name = participants[i];
-				if ( !!name && name != $("#username").val() )
+				if ( !!name && name != gon.username )
 					contacts.push(name);
 			}
 
@@ -200,4 +205,4 @@ var utils = {};
 
 	});
 
-})(utils, xRtc);
+})(oneToOneVideo, xRtc);

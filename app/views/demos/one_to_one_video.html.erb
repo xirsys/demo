@@ -1,1 +1,124 @@
-<h3>One-to-one video</h3>
+<h1>One-to-one video</h1>
+<h4>A simple one-to-one video demo</h4>
+
+<% if @show_form %>
+  <form class="form-horizontal">
+    <div class="control-group">
+      <label for="room" class="control-label">Room</label>
+      <div class="controls">
+        <input type="text" id="room" name="room" value="default" />
+      </div>
+    </div>
+    <div class="control-group">
+      <label for="username" class="control-label">Username</label>
+      <div class="controls">
+        <input type="text" id="username" name="username" value="alex" />
+      </div>
+    </div>
+    <br>
+    <input type="submit" value="Join" class="btn btn-primary btn-large" />
+  </form>
+<% else %>
+
+	<div class="panel">
+		<h3><span>Step 2:</span> Connect to a User</h3>
+		<div>
+			<div>
+				<label>Users: </label>
+				<select id="userlist"></select>
+			</div>
+			<div>
+				<label></label>
+				<button id="connect">Connect</button>
+			</div>
+		</div>
+	</div>
+
+	<div class="panel">
+		<h3><span>Step 3:</span> Video Throughput</h3>
+		<div>
+			<video id="vid1"></video>
+			<video id="vid2"></video>
+		</div>
+	</div>
+
+
+  <script type="text/javascript">
+
+		$(document).ready(function() {
+
+      // initialise oneToOneVideo object
+			oneToOneVideo.init();
+      
+			/**********************************
+			 *
+			 *   Handles join button click
+			 *
+			 **********************************/
+
+        console.log('begin test');
+
+
+				// success and fail handlers for users local video/audio stream allocation
+				var getMediaSuccess = function (stream) {
+					oneToOneVideo.addVideo({ stream: stream, isLocalStream: true, userId: gon.username });
+					oneToOneVideo.localMediaStream( stream );
+				};
+				var getMediaFailed = function (err) {
+					console.log('Get media stream error. ', err);
+				};
+
+				// request the local video and audio stream
+				oneToOneVideo.getUserMedia(
+					{ video: true, audio: true },
+					getMediaSuccess,
+					getMediaFailed
+				);
+
+				// room information object / container
+				var roomInfo = {
+          name: gon.room
+				};
+
+
+				// create XirSys objects needed to initialise a room
+				oneToOneVideo.room( new xRtc.Room(roomInfo) );
+
+				// assign events for updating the rooms user list
+				oneToOneVideo.room().on( xRtc.Room.events.participantsUpdated, oneToOneVideo.refreshRoom )
+							.on( xRtc.Room.events.participantConnected, oneToOneVideo.refreshRoom )
+							.on( xRtc.Room.events.participantDisconnected, oneToOneVideo.refreshRoom )
+							.on( xRtc.Room.events.connectionDeclined, oneToOneVideo.refreshRoom )
+							// more events for accepting a call and handling connection creation
+							.on( xRtc.Room.events.incomingConnection, oneToOneVideo.acceptCall )
+							.on( xRtc.Room.events.connectionCreated, oneToOneVideo.connectionCreated );
+
+				// map all other default events
+				oneToOneVideo.subscribe( oneToOneVideo.room(), xRtc.Room.events );
+
+        
+
+				// Enter / open room
+				oneToOneVideo.room().enter(gon.username, { autoReply: false });
+
+
+
+			/**********************************
+			 *
+			 *   Handles connect button click
+			 *
+			 **********************************/
+			$("#connect").click(function (e) {
+				e.preventDefault();
+				// get username of remote peer
+				var contact = $("#userlist").val();
+				console.log('Connecting to participant...', contact);
+				// connect to remote peer
+				oneToOneVideo.room().connect(contact, {});
+			});
+
+		});
+
+	</script>
+
+<% end %>

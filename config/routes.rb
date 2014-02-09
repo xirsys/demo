@@ -3,9 +3,12 @@ XirsysRails::Application.routes.draw do
   
   resources :xirsys, defaults: {format: :json} do  
     collection do
-      get 'getIceServers'
-      get 'getToken'
-      get 'addRoom'
+      get  'getIceServers'
+      post 'getIceServers'
+      get  'getToken'
+      post 'getToken'
+      get  'addRoom'
+      post 'addRoom'
     end
   end
   
