@@ -12,7 +12,7 @@ class XirsysController < ApplicationController
     uri = URI.parse('https://api.xirsys.com/getIceServers')
     path = '/getIceServers'
     fields_string = ''  
-    
+        
     fields = { 'domain'      => url_encode(@xirsys_domain),
                'application' => url_encode(@xirsys_application),
                'room'        => url_encode(params[:room]),
