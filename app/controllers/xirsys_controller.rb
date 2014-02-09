@@ -108,7 +108,9 @@ class XirsysController < ApplicationController
     # Get response
     # puts @result.body
     
-    # Redirect
+    respond_to do |format|
+      format.json { render json: @result.body }
+    end
   end
   
   private

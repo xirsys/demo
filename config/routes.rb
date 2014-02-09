@@ -12,9 +12,6 @@ XirsysRails::Application.routes.draw do
   resources :demos, :path => '/' do  
     collection do
       
-      #Pages
-      get '/about', to: 'demos#about'
-      
       # Tests
       get '/get_token_test' => 'demos#get_token_test'
       get '/get_ice_servers_test' => 'demos#get_ice_servers_test'
