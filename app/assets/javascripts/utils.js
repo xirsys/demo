@@ -7,8 +7,8 @@
  * establish connections as detailed in the demo HTML files.
  **/
 
-var oneToOneVideo = {};
-(function (oneToOneVideo, xrtc) {
+var utils = {};
+(function (utils, xrtc) {
 	var _av = false,
 		_room = null,
 		_userName = null,
@@ -17,19 +17,15 @@ var oneToOneVideo = {};
 		_localMediaStream = null,
 		_remoteParticipantId = null;
 
-	xrtc.Class.extend(oneToOneVideo, {
+	xrtc.Class.extend(utils, {
 
 		init: function() {
 			// Set middle tier service proxies (on server)
 			// This is the server page which handles the calls 
 			// to the XirSys services
       
-      console.log('init test');
-      
 			xrtc.AuthManager.settings.tokenHandler = "/xirsys/getToken";
 			xrtc.AuthManager.settings.iceHandler = "/xirsys/getIceServers";
-      
-      console.log('init test');
 
 			// Enable logging for sanity's sake
 			xrtc.Logger.enable({ debug: true, warning: true, error: true, test: true });
@@ -78,7 +74,7 @@ var oneToOneVideo = {};
 			_connection = connectionData.connection;
 			_remoteParticipantId = connectionData.userId;
 
-			oneToOneVideo.subscribe( _connection, xrtc.Connection.events );
+			utils.subscribe( _connection, xrtc.Connection.events );
 
 			var data = _connection.getData();
 
@@ -87,21 +83,21 @@ var oneToOneVideo = {};
 				.on( xrtc.Connection.events.remoteStreamAdded, function (data) {
 					data.isLocalStream = false;
 					console.log("adding remote stream");
-					oneToOneVideo.addVideo(data);
-					oneToOneVideo.refreshRoom();
+					utils.addVideo(data);
+					utils.refreshRoom();
 				})
 				// Update users list on state change
 				.on( xrtc.Connection.events.stateChanged, function (state) {
-					oneToOneVideo.refreshRoom();
+					utils.refreshRoom();
 				})
 				// Handler for simple chat demo's data channel
 				.on( xrtc.Connection.events.dataChannelCreated, function (data) {
 					_textChannel = data.channel;
-					oneToOneVideo.subscribe(_textChannel, xrtc.DataChannel.events);
+					utils.subscribe(_textChannel, xrtc.DataChannel.events);
 					_textChannel.on( xrtc.DataChannel.events.message, function(msgData) {
-						oneToOneVideo.addMessage(msgData.userId, msgData.message);
+						utils.addMessage(msgData.userId, msgData.message);
 					});
-					oneToOneVideo.addMessage("SYSTEM", "You are now connected.");
+					utils.addMessage("SYSTEM", "You are now connected.");
 
 				}).on(xrtc.Connection.events.dataChannelCreationError, function(data) {
 					console.log('Failed to create data channel ' + data.channelName + '. Make sure that your Chrome M25 or later with --enable-data-channels flag.');
@@ -134,7 +130,7 @@ var oneToOneVideo = {};
 			console.log('Sending message...', message);
 			if (_textChannel) {
 				_textChannel.send(message);
-				oneToOneVideo.addMessage( _userName, message, true );
+				utils.addMessage( _userName, message, true );
 			} else {
 				console.log('DataChannel is not created. Please, see log.');
 			}
@@ -151,12 +147,11 @@ var oneToOneVideo = {};
 		// Update drop-down list of remote peers
 		refreshRoom: function() {
 			roomInfo = _room.getInfo();
-
 			$('#userlist').empty();
-
-			var contacts = oneToOneVideo.convertContacts(_room.getParticipants());
+      
+			var contacts = utils.convertContacts(_room.getUsers());
 			for (var index = 0, len = contacts.length; index < len; index++) {
-				oneToOneVideo.addParticipant(contacts[index]);
+				utils.addParticipant(contacts[index]);
 			}
 		},
 
@@ -171,8 +166,8 @@ var oneToOneVideo = {};
 
 			for (var i = 0, len = participants.length; i < len; i++) {
 				var name = participants[i];
-				if ( !!name && name != gon.username )
-					contacts.push(name);
+				if ( !!name && name.id != gon.username )
+					contacts.push(name.id);
 			}
 
 			return contacts;
@@ -189,7 +184,7 @@ var oneToOneVideo = {};
 		removeParticipant: function(participant) {
 			$('#userlist').find('.option[value="' + participant + '"]').remove();
 		},
-
+    
 		// Subscribe to events on eventDispatcher object
 		subscribe: function(eventDispatcher, events) {
 			if (typeof eventDispatcher.on === "function") {
@@ -205,4 +200,4 @@ var oneToOneVideo = {};
 
 	});
 
-})(oneToOneVideo, xRtc);
+})(utils, xRtc);

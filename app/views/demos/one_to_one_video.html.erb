@@ -6,49 +6,46 @@
     <div class="control-group">
       <label for="room" class="control-label">Room</label>
       <div class="controls">
-        <input type="text" id="room" name="room" value="default" />
+        <input type="text" id="room" name="room" value="default"/>
       </div>
     </div>
     <div class="control-group">
       <label for="username" class="control-label">Username</label>
       <div class="controls">
-        <input type="text" id="username" name="username" value="alex" />
+        <input type="text" id="username" name="username" value="alex"/>
       </div>
     </div>
     <br>
-    <input type="submit" value="Join" class="btn btn-primary btn-large" />
+    <input type="submit" value="Join" class="btn btn-primary btn-large"/>
   </form>
 <% else %>
 
-	<div class="panel">
-		<h3><span>Step 2:</span> Connect to a User</h3>
-		<div>
-			<div>
-				<label>Users: </label>
-				<select id="userlist"></select>
-			</div>
-			<div>
-				<label></label>
-				<button id="connect">Connect</button>
-			</div>
-		</div>
+  <form class="form-horizontal">
+    <div class="control-group">
+      <label for="userlist" class="control-label">Connect to a user</label>
+      <div class="controls">
+        <select id="userlist"></select>
+      </div>
+    </div>
+    <br>
+    <button id="connect" class="btn btn-primary btn-large">Connect</button>
+  </form>
+
+  <br>
+
+  <div>
+		<video id="vid1"></video>
+		<video id="vid2"></video>
 	</div>
 
-	<div class="panel">
-		<h3><span>Step 3:</span> Video Throughput</h3>
-		<div>
-			<video id="vid1"></video>
-			<video id="vid2"></video>
-		</div>
-	</div>
 
 
   <script type="text/javascript">
 
 		$(document).ready(function() {
 
-      // initialise oneToOneVideo object
-			oneToOneVideo.init();
+      // initialise utils object
+			utils.init();
       
 			/**********************************
 			 *
@@ -56,20 +53,17 @@
 			 *
 			 **********************************/
 
-        console.log('begin test');
-
-
 				// success and fail handlers for users local video/audio stream allocation
 				var getMediaSuccess = function (stream) {
-					oneToOneVideo.addVideo({ stream: stream, isLocalStream: true, userId: gon.username });
-					oneToOneVideo.localMediaStream( stream );
+					utils.addVideo({ stream: stream, isLocalStream: true, userId: gon.username });
+					utils.localMediaStream( stream );
 				};
 				var getMediaFailed = function (err) {
 					console.log('Get media stream error. ', err);
 				};
 
 				// request the local video and audio stream
-				oneToOneVideo.getUserMedia(
+				utils.getUserMedia(
 					{ video: true, audio: true },
 					getMediaSuccess,
 					getMediaFailed
@@ -82,26 +76,24 @@
 
 
 				// create XirSys objects needed to initialise a room
-				oneToOneVideo.room( new xRtc.Room(roomInfo) );
-
+				utils.room( new xRtc.Room(roomInfo) );
+      
 				// assign events for updating the rooms user list
-				oneToOneVideo.room().on( xRtc.Room.events.participantsUpdated, oneToOneVideo.refreshRoom )
-							.on( xRtc.Room.events.participantConnected, oneToOneVideo.refreshRoom )
-							.on( xRtc.Room.events.participantDisconnected, oneToOneVideo.refreshRoom )
-							.on( xRtc.Room.events.connectionDeclined, oneToOneVideo.refreshRoom )
+				utils.room().on( xRtc.Room.events.usersUpdated, utils.refreshRoom )
+							.on( xRtc.Room.events.userConnected, utils.refreshRoom )
+							.on( xRtc.Room.events.userDisconnected, utils.refreshRoom )
+							.on( xRtc.Room.events.connectionDeclined, utils.refreshRoom )
 							// more events for accepting a call and handling connection creation
-							.on( xRtc.Room.events.incomingConnection, oneToOneVideo.acceptCall )
-							.on( xRtc.Room.events.connectionCreated, oneToOneVideo.connectionCreated );
+							.on( xRtc.Room.events.incomingConnection, utils.acceptCall )
+							.on( xRtc.Room.events.connectionCreated, utils.connectionCreated );
 
 				// map all other default events
-				oneToOneVideo.subscribe( oneToOneVideo.room(), xRtc.Room.events );
+				utils.subscribe( utils.room(), xRtc.Room.events );
 
         
 
 				// Enter / open room
-				oneToOneVideo.room().enter(gon.username, { autoReply: false });
-
-
+				utils.room().enter(gon.username, { autoReply: false });
 
 			/**********************************
 			 *
@@ -114,7 +106,7 @@
 				var contact = $("#userlist").val();
 				console.log('Connecting to participant...', contact);
 				// connect to remote peer
-				oneToOneVideo.room().connect(contact, {});
+        utils.room().connect(contact, {});
 			});
 
 		});
