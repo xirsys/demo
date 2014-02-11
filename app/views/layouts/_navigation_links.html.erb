@@ -1,7 +1,19 @@
 <!-- Add navigation links to this file -->
 <li><%= link_to 'Documentation', 'https://github.com/xirsys/rails' %></li>
-<li><%= link_to 'Get ICE servers test', demo_path('get_ice_servers_test') %></li>
-<li><%= link_to 'Get token test', demo_path('get_token_test') %></li>
-<li><%= link_to 'Add room test', demo_path('add_room_test') %></li>
-<li><%= link_to 'One-to-one video', demo_path('one_to_one_video') %></li>
-<li><%= link_to 'Many-to-many video', demo_path('many_to_many_video') %></li>
+
+<li class="dropdown">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown">Simple tests <b class="caret"></b></a>
+  <ul class="dropdown-menu">
+    <li><%= link_to 'Get ICE servers test', demo_path('get_ice_servers_test') %></li>
+    <li><%= link_to 'Get token test', demo_path('get_token_test') %></li>
+    <li><%= link_to 'Add room test', demo_path('add_room_test') %></li>
+  </ul>
+</li>
+
+<li class="dropdown">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown">Simple demos <b class="caret"></b></a>
+  <ul class="dropdown-menu">
+    <li><%= link_to 'One-to-one video', demo_path('one_to_one_video') %></li>
+    <li><%= link_to 'Many-to-many video', demo_path('many_to_many_video') %></li>
+  </ul>
+</li>

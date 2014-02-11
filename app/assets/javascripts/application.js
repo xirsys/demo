@@ -33,3 +33,17 @@
 //= require 'utils'
 
 //= require_tree .
+
+// Makes external links open in new tab
+$(document).ready(function() {
+  $("a").click(function() {
+    link_host = this.href.split("/")[2];
+    document_host = document.location.href.split("/")[2];
+    
+    // Undefined makes sure green status updates don't open new tabs
+    if (link_host != document_host && link_host != undefined) {
+      window.open(this.href);
+      return false;
+    }
+  });
+});
