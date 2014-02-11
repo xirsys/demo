@@ -23,7 +23,7 @@ var utilsJoinRoom = {};
 			// Set middle tier service proxies (on server)
 			// This is the server page which handles the calls 
 			// to the XirSys services
-      
+
 			xrtc.AuthManager.settings.tokenHandler = "/xirsys/getToken";
 			xrtc.AuthManager.settings.iceHandler = "/xirsys/getIceServers";
 
@@ -73,7 +73,7 @@ var utilsJoinRoom = {};
 		refreshRoom: function() {
 			roomInfo = _room.getInfo();
 			$('#userlist').empty();
-      
+
 			var contacts = utilsJoinRoom.convertContacts(_room.getUsers());
 			for (var index = 0, len = contacts.length; index < len; index++) {
 				utilsJoinRoom.addParticipant(contacts[index]);
@@ -104,7 +104,7 @@ var utilsJoinRoom = {};
 		removeParticipant: function(participant) {
 			$('#userlist').find('.option[value="' + participant + '"]').remove();
 		},
-    
+
 		// Subscribe to events on eventDispatcher object
 		subscribe: function(eventDispatcher, events) {
 			if (typeof eventDispatcher.on === "function") {

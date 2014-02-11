@@ -1,1 +1,105 @@
-<h3>Many-to-many video</h3>
+<h1>Many-to-many video</h1>
+<h4>A simple many-to-many video demo</h4>
+
+<% if @show_form %>
+  <form class="form-horizontal">
+    <div class="control-group">
+      <label for="room" class="control-label">Room</label>
+      <div class="controls">
+        <input type="text" id="room" name="room" value="default"/>
+      </div>
+    </div>
+    <div class="control-group">
+      <label for="username" class="control-label">Username</label>
+      <div class="controls">
+        <input type="text" id="username" name="username" value="alex"/>
+      </div>
+    </div>
+    <br>
+    <input type="submit" value="Join" class="btn btn-primary btn-large"/>
+  </form>
+<% else %>
+  <form class="form-horizontal">
+    <div class="control-group">
+      <label for="userlist" class="control-label">Connect to a user</label>
+      <div class="controls">
+        <select id="userlist"></select>
+      </div>
+    </div>
+    <br>
+    <button id="connect" class="btn btn-primary btn-large">Connect</button>
+  </form>
+
+  <br>
+
+  <div id="video-slots">
+	</div>
+
+  <script type="text/javascript">
+
+		$(document).ready(function() {
+
+      // initialise utilsManyToManyVideo object
+			utilsManyToManyVideo.init();
+      
+				// success and fail handlers for users local video/audio stream allocation
+				var getMediaSuccess = function (stream) {
+					utilsManyToManyVideo.addVideo({ stream: stream, isLocalStream: true, userId: gon.username });
+					utilsManyToManyVideo.localMediaStream( stream );
+				};
+				var getMediaFailed = function (err) {
+					console.log('Get media stream error. ', err);
+				};
+
+				// request the local video and audio stream
+				utilsManyToManyVideo.getUserMedia(
+					{ video: true, audio: true },
+					getMediaSuccess,
+					getMediaFailed
+				);
+
+				// room information object / container
+				var roomInfo = {
+          name: gon.room
+				};
+
+
+				// create XirSys objects needed to initialise a room
+				utilsManyToManyVideo.room( new xRtc.Room(roomInfo) );
+      
+				// assign events for updating the rooms user list
+				utilsManyToManyVideo.room().on( xRtc.Room.events.usersUpdated, utilsManyToManyVideo.refreshRoom )
+							.on( xRtc.Room.events.userConnected, utilsManyToManyVideo.refreshRoom )
+							.on( xRtc.Room.events.userDisconnected, utilsManyToManyVideo.refreshRoom )
+							.on( xRtc.Room.events.connectionDeclined, utilsManyToManyVideo.refreshRoom )
+							// more events for accepting a call and handling connection creation
+							.on( xRtc.Room.events.incomingConnection, utilsManyToManyVideo.acceptCall )
+							.on( xRtc.Room.events.connectionCreated, utilsManyToManyVideo.connectionCreated );
+
+				// map all other default events
+				utilsManyToManyVideo.subscribe( utilsManyToManyVideo.room(), xRtc.Room.events );
+
+        
+
+				// Enter / open room
+				utilsManyToManyVideo.room().enter(gon.username, { autoReply: false });
+
+			/**********************************
+			 *
+			 *   Handles connect button click
+			 *
+			 **********************************/
+			$("#connect").click(function (e) {
+				e.preventDefault();
+				// get username of remote peer
+				var contact = $("#userlist").val();
+				console.log('Connecting to participant...', contact);
+				// connect to remote peer
+        utilsManyToManyVideo.room().connect(contact, {});
+			});
+
+		});
+
+	</script>
+
+<% end %>

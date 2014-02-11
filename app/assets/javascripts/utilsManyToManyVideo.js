@@ -7,8 +7,8 @@
  * establish connections as detailed in the demo HTML files.
  **/
 
-var utilsOneToOneVideo = {};
-(function (utilsOneToOneVideo, xrtc) {
+var utilsManyToManyVideo = {};
+(function (utilsManyToManyVideo, xrtc) {
 	var _av = false,
 		_room = null,
 		_userName = null,
@@ -17,7 +17,7 @@ var utilsOneToOneVideo = {};
 		_localMediaStream = null,
 		_remoteParticipantId = null;
 
-	xrtc.Class.extend(utilsOneToOneVideo, {
+	xrtc.Class.extend(utilsManyToManyVideo, {
 
 		init: function() {
 			// Set middle tier service proxies (on server)
@@ -74,7 +74,7 @@ var utilsOneToOneVideo = {};
 			_connection = connectionData.connection;
 			_remoteParticipantId = connectionData.userId;
 
-			utilsOneToOneVideo.subscribe( _connection, xrtc.Connection.events );
+			utilsManyToManyVideo.subscribe( _connection, xrtc.Connection.events );
 
 			var data = _connection.getData();
 
@@ -83,21 +83,21 @@ var utilsOneToOneVideo = {};
 				.on( xrtc.Connection.events.remoteStreamAdded, function (data) {
 					data.isLocalStream = false;
 					console.log("adding remote stream");
-					utilsOneToOneVideo.addVideo(data);
-					utilsOneToOneVideo.refreshRoom();
+					utilsManyToManyVideo.addVideo(data);
+					utilsManyToManyVideo.refreshRoom();
 				})
 				// Update users list on state change
 				.on( xrtc.Connection.events.stateChanged, function (state) {
-					utilsOneToOneVideo.refreshRoom();
+					utilsManyToManyVideo.refreshRoom();
 				})
 				// Handler for simple chat demo's data channel
 				.on( xrtc.Connection.events.dataChannelCreated, function (data) {
 					_textChannel = data.channel;
-					utilsOneToOneVideo.subscribe(_textChannel, xrtc.DataChannel.events);
+					utilsManyToManyVideo.subscribe(_textChannel, xrtc.DataChannel.events);
 					_textChannel.on( xrtc.DataChannel.events.message, function(msgData) {
-						utilsOneToOneVideo.addMessage(msgData.userId, msgData.message);
+						utilsManyToManyVideo.addMessage(msgData.userId, msgData.message);
 					});
-					utilsOneToOneVideo.addMessage("SYSTEM", "You are now connected.");
+					utilsManyToManyVideo.addMessage("SYSTEM", "You are now connected.");
 
 				}).on(xrtc.Connection.events.dataChannelCreationError, function(data) {
 					console.log('Failed to create data channel ' + data.channelName + '. Make sure that your Chrome M25 or later with --enable-data-channels flag.');
@@ -106,7 +106,11 @@ var utilsOneToOneVideo = {};
         // You may wish to add real functionality here
 				.on( xrtc.Connection.events.localStreamAdded, function (data) { })
 				.on( xrtc.Connection.events.connectionEstablished, function (data) { })
-				.on( xrtc.Connection.events.connectionClosed, function (data) { });
+				.on( xrtc.Connection.events.connectionClosed, function (data) { 
+          var userId = data.user.id;
+          // Remove video element of disconnecting user
+          $("#video-" + userId).remove();
+        });
 
 			if (_av)
 				_connection.addStream(_localMediaStream);
@@ -115,10 +119,26 @@ var utilsOneToOneVideo = {};
 		// Assign stream to a video DOM tag
 		addVideo: function(data) {
 			var stream = data.stream;
-			var userId = data.userId;
+      var userId;
+      
+      if (data.isLocalStream) {
+        userId = data.userId;
+      } else {
+        userId = data.user.id;
+      }
 
-			var video = (data.isLocalStream) ? $('#vid1').get(0) : $('#vid2').get(0);
+			// var video = (data.isLocalStream) ? $('#vid1').get(0) : $('#vid2').get(0);
 
+			var video;
+      if (data.isLocalStream) {
+        $("#video-slots").append("<video class='many-to-many' id='video-local'></video>")
+        video = $('#video-local').get(0);
+      } else {
+        // Add a new video element with connection credentials
+        $("#video-slots").append("<video class='many-to-many' id='video-" + userId + "'></video>")
+        video = $('#video-' + userId).get(0);
+      }
+      
 			stream.assignTo(video);
 
 			if ( data.isLocalStream ) {
@@ -130,7 +150,7 @@ var utilsOneToOneVideo = {};
 			console.log('Sending message...', message);
 			if (_textChannel) {
 				_textChannel.send(message);
-				utilsOneToOneVideo.addMessage( _userName, message, true );
+				utilsManyToManyVideo.addMessage( _userName, message, true );
 			} else {
 				console.log('DataChannel is not created. Please, see log.');
 			}
@@ -149,9 +169,9 @@ var utilsOneToOneVideo = {};
 			roomInfo = _room.getInfo();
 			$('#userlist').empty();
       
-			var contacts = utilsOneToOneVideo.convertContacts(_room.getUsers());
+			var contacts = utilsManyToManyVideo.convertContacts(_room.getUsers());
 			for (var index = 0, len = contacts.length; index < len; index++) {
-				utilsOneToOneVideo.addParticipant(contacts[index]);
+				utilsManyToManyVideo.addParticipant(contacts[index]);
 			}
 		},
 
@@ -200,4 +220,4 @@ var utilsOneToOneVideo = {};
 
 	});
 
-})(utilsOneToOneVideo, xRtc);
+})(utilsManyToManyVideo, xRtc);
