@@ -7,8 +7,8 @@
  * establish connections as detailed in the demo HTML files.
  **/
 
-var utils = {};
-(function (utils, xrtc) {
+var utilsOneToOneVideo = {};
+(function (utilsOneToOneVideo, xrtc) {
 	var _av = false,
 		_room = null,
 		_userName = null,
@@ -17,7 +17,7 @@ var utils = {};
 		_localMediaStream = null,
 		_remoteParticipantId = null;
 
-	xrtc.Class.extend(utils, {
+	xrtc.Class.extend(utilsOneToOneVideo, {
 
 		init: function() {
 			// Set middle tier service proxies (on server)
@@ -74,7 +74,7 @@ var utils = {};
 			_connection = connectionData.connection;
 			_remoteParticipantId = connectionData.userId;
 
-			utils.subscribe( _connection, xrtc.Connection.events );
+			utilsOneToOneVideo.subscribe( _connection, xrtc.Connection.events );
 
 			var data = _connection.getData();
 
@@ -83,21 +83,21 @@ var utils = {};
 				.on( xrtc.Connection.events.remoteStreamAdded, function (data) {
 					data.isLocalStream = false;
 					console.log("adding remote stream");
-					utils.addVideo(data);
-					utils.refreshRoom();
+					utilsOneToOneVideo.addVideo(data);
+					utilsOneToOneVideo.refreshRoom();
 				})
 				// Update users list on state change
 				.on( xrtc.Connection.events.stateChanged, function (state) {
-					utils.refreshRoom();
+					utilsOneToOneVideo.refreshRoom();
 				})
 				// Handler for simple chat demo's data channel
 				.on( xrtc.Connection.events.dataChannelCreated, function (data) {
 					_textChannel = data.channel;
-					utils.subscribe(_textChannel, xrtc.DataChannel.events);
+					utilsOneToOneVideo.subscribe(_textChannel, xrtc.DataChannel.events);
 					_textChannel.on( xrtc.DataChannel.events.message, function(msgData) {
-						utils.addMessage(msgData.userId, msgData.message);
+						utilsOneToOneVideo.addMessage(msgData.userId, msgData.message);
 					});
-					utils.addMessage("SYSTEM", "You are now connected.");
+					utilsOneToOneVideo.addMessage("SYSTEM", "You are now connected.");
 
 				}).on(xrtc.Connection.events.dataChannelCreationError, function(data) {
 					console.log('Failed to create data channel ' + data.channelName + '. Make sure that your Chrome M25 or later with --enable-data-channels flag.');
@@ -130,7 +130,7 @@ var utils = {};
 			console.log('Sending message...', message);
 			if (_textChannel) {
 				_textChannel.send(message);
-				utils.addMessage( _userName, message, true );
+				utilsOneToOneVideo.addMessage( _userName, message, true );
 			} else {
 				console.log('DataChannel is not created. Please, see log.');
 			}
@@ -149,9 +149,9 @@ var utils = {};
 			roomInfo = _room.getInfo();
 			$('#userlist').empty();
       
-			var contacts = utils.convertContacts(_room.getUsers());
+			var contacts = utilsOneToOneVideo.convertContacts(_room.getUsers());
 			for (var index = 0, len = contacts.length; index < len; index++) {
-				utils.addParticipant(contacts[index]);
+				utilsOneToOneVideo.addParticipant(contacts[index]);
 			}
 		},
 
@@ -200,4 +200,4 @@ var utils = {};
 
 	});
 
-})(utils, xRtc);
+})(utilsOneToOneVideo, xRtc);

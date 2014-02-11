@@ -1,5 +1,5 @@
-<h1>One-to-one video</h1>
-<h4>A simple one-to-one video demo</h4>
+<h1>Join room test</h1>
+<h4>A simple test that checks if your server is properly configured to allow users to join XirSys rooms</h4>
 
 <% if @show_form %>
   <form class="form-horizontal">
@@ -16,45 +16,43 @@
       </div>
     </div>
     <br>
-    <input type="submit" value="Join" class="btn btn-primary btn-large"/>
+    <input type="submit" value="Test" class="btn btn-primary btn-large"/>
   </form>
 <% else %>
+
   <form class="form-horizontal">
     <div class="control-group">
-      <label for="userlist" class="control-label">Connect to a user</label>
+      <label for="userlist" class="control-label">Users in this room</label>
       <div class="controls">
-        <select id="userlist"></select>
+        <ul id="userlist">
+        </ul>
       </div>
     </div>
-    <br>
-    <button id="connect" class="btn btn-primary btn-large">Connect</button>
-  </form>
-
-  <br>
-
-  <div>
-		<video id="vid1"></video>
-		<video id="vid2"></video>
-	</div>
 
   <script type="text/javascript">
 
 		$(document).ready(function() {
 
-      // initialise utilsOneToOneVideo object
-			utilsOneToOneVideo.init();
+      // initialise utilsJoinRoom object
+			utilsJoinRoom.init();
       
+			/**********************************
+			 *
+			 *   Handles join button click
+			 *
+			 **********************************/
+
 				// success and fail handlers for users local video/audio stream allocation
 				var getMediaSuccess = function (stream) {
-					utilsOneToOneVideo.addVideo({ stream: stream, isLocalStream: true, userId: gon.username });
-					utilsOneToOneVideo.localMediaStream( stream );
+					utilsJoinRoom.addVideo({ stream: stream, isLocalStream: true, userId: gon.username });
+					utilsJoinRoom.localMediaStream( stream );
 				};
 				var getMediaFailed = function (err) {
 					console.log('Get media stream error. ', err);
 				};
 
 				// request the local video and audio stream
-				utilsOneToOneVideo.getUserMedia(
+				utilsJoinRoom.getUserMedia(
 					{ video: true, audio: true },
 					getMediaSuccess,
 					getMediaFailed
@@ -67,24 +65,24 @@
 
 
 				// create XirSys objects needed to initialise a room
-				utilsOneToOneVideo.room( new xRtc.Room(roomInfo) );
+				utilsJoinRoom.room( new xRtc.Room(roomInfo) );
       
 				// assign events for updating the rooms user list
-				utilsOneToOneVideo.room().on( xRtc.Room.events.usersUpdated, utilsOneToOneVideo.refreshRoom )
-							.on( xRtc.Room.events.userConnected, utilsOneToOneVideo.refreshRoom )
-							.on( xRtc.Room.events.userDisconnected, utilsOneToOneVideo.refreshRoom )
-							.on( xRtc.Room.events.connectionDeclined, utilsOneToOneVideo.refreshRoom )
+				utilsJoinRoom.room().on( xRtc.Room.events.usersUpdated, utilsJoinRoom.refreshRoom )
+							.on( xRtc.Room.events.userConnected, utilsJoinRoom.refreshRoom )
+							.on( xRtc.Room.events.userDisconnected, utilsJoinRoom.refreshRoom )
+							.on( xRtc.Room.events.connectionDeclined, utilsJoinRoom.refreshRoom )
 							// more events for accepting a call and handling connection creation
-							.on( xRtc.Room.events.incomingConnection, utilsOneToOneVideo.acceptCall )
-							.on( xRtc.Room.events.connectionCreated, utilsOneToOneVideo.connectionCreated );
+							.on( xRtc.Room.events.incomingConnection, utilsJoinRoom.acceptCall )
+							.on( xRtc.Room.events.connectionCreated, utilsJoinRoom.connectionCreated );
 
 				// map all other default events
-				utilsOneToOneVideo.subscribe( utilsOneToOneVideo.room(), xRtc.Room.events );
+				utilsJoinRoom.subscribe( utilsJoinRoom.room(), xRtc.Room.events );
 
         
 
 				// Enter / open room
-				utilsOneToOneVideo.room().enter(gon.username, { autoReply: false });
+				utilsJoinRoom.room().enter(gon.username, { autoReply: false });
 
 			/**********************************
 			 *
@@ -97,7 +95,7 @@
 				var contact = $("#userlist").val();
 				console.log('Connecting to participant...', contact);
 				// connect to remote peer
-        utilsOneToOneVideo.room().connect(contact, {});
+        utilsJoinRoom.room().connect(contact, {});
 			});
 
 		});

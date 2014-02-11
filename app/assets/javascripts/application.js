@@ -30,7 +30,8 @@
 //= require 'xRtc/Stream'
 //= require 'xRtc/Room'
 
-//= require 'utils'
+//= require 'utilsJoinRoom'
+//= require 'utilsOneToOneVideo'
 
 //= require_tree .
 

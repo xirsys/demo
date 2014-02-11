@@ -19,6 +19,7 @@ XirsysRails::Application.routes.draw do
       get '/get_token_test' => 'demos#get_token_test'
       get '/get_ice_servers_test' => 'demos#get_ice_servers_test'
       get '/add_room_test' => 'demos#add_room_test'
+      get '/join_room_test' => 'demos#join_room_test'
       
       # Demos
       get '/one_to_one_video' => 'demos#one_to_one_video'
