@@ -12,6 +12,13 @@
  *= require_tree .
  */
 
+// Import Font Awesome
+@import "font-awesome";
+
 ul {
   padding-left: 25px;
+}
+
+.button-social {
+  color: #7BC705;
 }

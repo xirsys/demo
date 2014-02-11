@@ -14,7 +14,10 @@ gem 'high_voltage'
 gem 'simple_form'
 gem 'therubyracer', :platform=>:ruby
 gem 'thin'
-gem 'gon'
+
+gem 'gon', '~> 5.0.1'
+gem 'font-awesome-rails', '~> 4.0.3.1'
+
 group :development do
   gem 'better_errors'
   gem 'binding_of_caller', :platforms=>[:mri_19, :mri_20, :rbx]

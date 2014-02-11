@@ -51,6 +51,8 @@ GEM
     figaro (0.7.0)
       bundler (~> 1.0)
       rails (>= 3, < 5)
+    font-awesome-rails (4.0.3.1)
+      railties (>= 3.2, < 5.0)
     gon (5.0.1)
       actionpack (>= 2.3.0)
       json
@@ -141,7 +143,8 @@ DEPENDENCIES
   bootstrap-sass (>= 3.0.0.0)
   coffee-rails (~> 4.0.0)
   figaro
-  gon
+  font-awesome-rails (~> 4.0.3.1)
+  gon (~> 5.0.1)
   high_voltage
   jbuilder (~> 1.2)
   jquery-rails
