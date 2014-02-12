@@ -33,6 +33,7 @@
 //= require 'utilsJoinRoom'
 //= require 'utilsOneToOneVideo'
 //= require 'utilsManyToManyVideo'
+//= require 'utilsManyToManyVideoDynamic'
 
 //= require_tree .
 
