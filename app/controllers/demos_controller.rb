@@ -61,4 +61,24 @@ class DemosController < ApplicationController
     end
   end
   
+  def one_to_one_text
+    @show_form = true;
+    
+    if params[:room] && params[:username]
+      @show_form = false;
+      gon.room = params[:room]
+      gon.username = params[:username]
+    end
+  end
+  
+  def many_to_many_text
+    @show_form = true;
+    
+    if params[:room] && params[:username]
+      @show_form = false;
+      gon.room = params[:room]
+      gon.username = params[:username]
+    end
+  end
+  
 end

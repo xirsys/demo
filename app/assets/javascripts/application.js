@@ -34,6 +34,8 @@
 //= require 'utilsOneToOneVideo'
 //= require 'utilsManyToManyVideo'
 //= require 'utilsManyToManyVideoDynamic'
+//= require 'utilsOneToOneText'
+//= require 'utilsManyToManyText'
 
 //= require_tree .
 

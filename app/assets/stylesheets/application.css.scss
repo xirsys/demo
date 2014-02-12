@@ -27,3 +27,43 @@ ul {
   width: 300px;
   height: 300px;
 }
+
+/* Text chat box */
+.text-chat#chatwindow-outer {
+  background-color: #222222;
+  position: relative;
+  width: 650px;
+  height: 366px;
+}
+.text-chat#chatwindow {
+  /* Keeps text vertically aligned to bottom */
+  position: absolute;
+  bottom: 0;
+  width: 650px;
+  max-height: 366px;
+  /* Splits long lines without spaces into separate lines */
+  word-wrap: break-word;
+  overflow: auto;
+}
+.text-chat#message {
+  /* Lose 20 pixels width due to padding */
+  width: 650px;
+  height: 24px;
+  margin: 0;
+  border: 0;
+  padding: 0 10px 0 10px;
+  -webkit-border-radius: 0 0 6px 6px;
+  -moz-border-radius: 0 0 6px 6px;
+  border-radius: 0 0 6px 6px;
+  background-color: #7BC705;
+  color: #FFFFFF;
+}
+.text-chat-user {
+  color: #7BC705;
+}
+.text-chat-line {
+  padding-left: 10px;
+  padding-right: 10px;
+  padding-bottom: 10px;
+  color: #000000;
+}
