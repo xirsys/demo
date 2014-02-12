@@ -19,6 +19,11 @@
     <input type="submit" value="Join" class="btn btn-primary btn-large"/>
   </form>
 <% else %>
+
+  <p>Link this demo to yourself or a friend:<br>
+    <%= link_to request.host + demo_path('one_to_one_video'), demo_path('one_to_one_video') %>
+  <p>
+
   <form class="form-horizontal">
     <div class="control-group">
       <label for="userlist" class="control-label">Connect to a user</label>

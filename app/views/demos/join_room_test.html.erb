@@ -20,6 +20,10 @@
   </form>
 <% else %>
 
+  <p>Link this test to yourself or a friend:<br>
+    <%= link_to request.host + demo_path('join_room_test'), demo_path('join_room_test') %>
+  <p>
+
   <form class="form-horizontal">
     <div class="control-group">
       <label for="userlist" class="control-label">Users in this room</label>
