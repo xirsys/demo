@@ -196,7 +196,7 @@ var utilsManyToManyVideoDynamic = {};
 		// Add remote peer name to drop-down list of contacts
 		addParticipant: function(participant) {
 			$('#userlist').append(
-				'<li>' + participant + '</li>'
+				'<li class="participant">' + participant + '</li>'
 			);
 		},
 

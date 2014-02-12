@@ -61,12 +61,12 @@ var utilsJoinRoom = {};
 
 		// Proxy getUserMedia so we can log if video / audio is being requested
 		getUserMedia: function(data, success, fail) {
-			xrtc.getUserMedia(
-				data,
-				success,
-				fail
-			);
-			_av = true;
+			// xrtc.getUserMedia(
+			// 	data,
+			// 	success,
+			//	fail
+			// );
+			// _av = true;
 		},
 
 		// Update drop-down list of remote peers

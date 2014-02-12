@@ -1,5 +1,5 @@
 <h1>Many-to-many video (dynamic)</h1>
-<h4>A simple many-to-many video demo that connects to each user dynamically</h4>
+<h4>A simple many-to-many video demo that connects to users dynamically</h4>
 
 <% if @show_form %>
   <form class="form-horizontal">
@@ -21,13 +21,12 @@
 <% else %>
   <form class="form-horizontal">
     <div class="control-group">
-      <label for="userlist" class="control-label">Users in this room</label>
+      <label for="userlist" class="control-label">Other users in this room</label>
       <div class="controls">
         <ul id="userlist">
         </ul>
       </div>
     </div>
-    <br>
     <button id="connect" class="btn btn-primary btn-large">Connect</button>
   </form>
 
@@ -93,10 +92,20 @@
 			$("#connect").click(function (e) {
 				e.preventDefault();
 				// get username of remote peer
-				var contact = $("#userlist").val();
-				console.log('Connecting to participant...', contact);
+        
+        // Grab room participants from list
+        var participants = [];
+        $('li.participant').each(function(i, elem) {
+            participants.push($(elem).text());
+        });
+        
+				console.log('Connecting to participants...');
 				// connect to remote peer
-        utilsManyToManyVideoDynamic.room().connect(contact, {});
+        for (var i = 0; i < participants.length; i++) {
+          // Remove existing video slot if name matches
+          $("#video-" + participants[i]).remove();
+          utilsManyToManyVideoDynamic.room().connect(participants[i], {});
+        }
 			});
 
 		});
