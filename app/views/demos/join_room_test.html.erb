@@ -100,7 +100,7 @@
 				var contact = $("#userlist").val();
 				console.log('Connecting to participant...', contact);
 				// connect to remote peer
-        utilsJoinRoom.room().connect(contact, {});
+        utilsJoinRoom.room().connect(contact, { createDataChannel: 'auto' });
 			});
 
 		});

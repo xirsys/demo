@@ -46,7 +46,6 @@ ul {
   overflow: auto;
 }
 .text-chat#message {
-  /* Lose 20 pixels width due to padding */
   width: 650px;
   height: 24px;
   margin: 0;
@@ -56,7 +55,6 @@ ul {
   -moz-border-radius: 0 0 6px 6px;
   border-radius: 0 0 6px 6px;
   background-color: #7BC705;
-  color: #FFFFFF;
 }
 .text-chat-user {
   color: #7BC705;
@@ -65,5 +63,5 @@ ul {
   padding-left: 10px;
   padding-right: 10px;
   padding-bottom: 10px;
-  color: #000000;
+  color: #FFFFFF;
 }

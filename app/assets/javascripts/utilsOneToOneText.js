@@ -94,11 +94,14 @@ var utilsOneToOneText = {};
 				.on( xrtc.Connection.events.dataChannelCreated, function (data) {
 					_textChannel = data.channel;
 					utilsOneToOneText.subscribe(_textChannel, xrtc.DataChannel.events);
-					_textChannel.on( xrtc.DataChannel.events.message, function(msgData) {
-						utilsOneToOneText.addMessage(msgData.userId, msgData.message);
+					_textChannel.on( xrtc.DataChannel.events.sentMessage, function(msgData) {
+						utilsOneToOneText.addMessage(roomInfo.user.name, msgData.message, true);
+					}).on(xrtc.DataChannel.events.receivedMessage, function (msgData) {
+								utilsOneToOneText.addMessage(_textChannel.getRemoteUser().name, msgData.message);
 					});
-					utilsOneToOneText.addMessage("xirsys", "You are now connected.");
-
+          
+					utilsOneToOneText.addMessage("XirSys", "You connected with " + _textChannel.getRemoteUser().name + ".");
+          
 				}).on(xrtc.Connection.events.dataChannelCreationError, function(data) {
 					console.log('Failed to create data channel ' + data.channelName + '. Make sure that your Chrome M25 or later with --enable-data-channels flag.');
 				})
@@ -106,7 +109,9 @@ var utilsOneToOneText = {};
         // You may wish to add real functionality here
 				.on( xrtc.Connection.events.localStreamAdded, function (data) { })
 				.on( xrtc.Connection.events.connectionEstablished, function (data) { })
-				.on( xrtc.Connection.events.connectionClosed, function (data) { });
+				.on( xrtc.Connection.events.connectionClosed, function (data) { 
+          utilsOneToOneText.addMessage("XirSys", "You disconnected from " + data.user.name + ".");
+        });
 
 			if (_av)
 				_connection.addStream(_localMediaStream);
@@ -130,7 +135,6 @@ var utilsOneToOneText = {};
 			console.log('Sending message...', message);
 			if (_textChannel) {
 				_textChannel.send(message);
-				utilsOneToOneText.addMessage( _userName, message, true );
 			} else {
 				console.log('DataChannel is not created. Please, see log.');
 			}
@@ -138,11 +142,10 @@ var utilsOneToOneText = {};
 
 		addMessage: function (name, message, isMy) {
 			var $chat = $('#chatwindow');
-      var $container = $('.terminal#chatwindow');
-      $chat.append("<div class='text-chat-line'><text class='text-chat-user'>" + name + "</text>: " + message + "</div>");
+      $chat.append("<div class='text-chat-line'><text class='text-chat-user'>" + name + ":</text> " + message + "</div>");
       
       // Fixes chat scrolling behavior
-      $container[0].scrollTop = $container[0].scrollHeight;
+      $chat[0].scrollTop = $chat[0].scrollHeight;
 		},
 
 		// Update drop-down list of remote peers

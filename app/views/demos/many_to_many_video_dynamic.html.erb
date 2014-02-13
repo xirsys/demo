@@ -109,7 +109,7 @@
         for (var i = 0; i < participants.length; i++) {
           // Remove existing video slot if name matches
           $("#video-" + participants[i]).remove();
-          utilsManyToManyVideoDynamic.room().connect(participants[i], {});
+          utilsManyToManyVideoDynamic.room().connect(participants[i], { createDataChannel: 'auto' });
         }
 			});
 
