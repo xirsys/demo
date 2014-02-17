@@ -24,3 +24,11 @@ group :development do
   gem 'quiet_assets'
   gem 'rails_layout'
 end
+
+group :staging do
+  gem 'pg', '~> 0.17.1'
+end
+
+group :production do
+  gem 'pg', '~> 0.17.1'
+end
