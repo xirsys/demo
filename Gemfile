@@ -1,7 +1,6 @@
 source 'https://rubygems.org'
 ruby '2.0.0'
 gem 'rails', '4.0.0'
-gem 'sqlite3'
 gem 'sass-rails', '~> 4.0.0'
 gem 'uglifier', '>= 1.3.0'
 gem 'coffee-rails', '~> 4.0.0'
@@ -18,17 +17,14 @@ gem 'thin'
 gem 'gon', '~> 5.0.1'
 gem 'font-awesome-rails', '~> 4.0.3.1'
 
-group :development do
+group :development, :test do
   gem 'better_errors'
   gem 'binding_of_caller', :platforms=>[:mri_19, :mri_20, :rbx]
   gem 'quiet_assets'
   gem 'rails_layout'
-end
-
-group :staging do
-  gem 'pg', '~> 0.17.1'
+  gem 'sqlite3'
 end
 
 group :production do
-  gem 'pg', '~> 0.17.1'
+  gem 'pg'
 end
