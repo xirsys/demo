@@ -149,7 +149,7 @@ DEPENDENCIES
   high_voltage
   jbuilder (~> 1.2)
   jquery-rails
-  pg (~> 0.17.1)
+  pg
   quiet_assets
   rails (= 4.0.0)
   rails_layout
