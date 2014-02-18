@@ -1,6 +1,10 @@
 <h1>One-to-one video</h1>
 <h4>A simple one-to-one video demo</h4>
 
+<p>Link this demo to yourself or a friend:<br>
+  <%= link_to request.host + demo_path('one_to_one_video'), demo_path('one_to_one_video') %>
+<p>
+
 <% if @show_form %>
   <form class="form-horizontal">
     <div class="control-group">
@@ -19,10 +23,6 @@
     <input type="submit" value="Join" class="btn btn-primary btn-large"/>
   </form>
 <% else %>
-
-  <p>Link this demo to yourself or a friend:<br>
-    <%= link_to request.host + demo_path('one_to_one_video'), demo_path('one_to_one_video') %>
-  <p>
 
   <form class="form-horizontal">
     <div class="control-group">

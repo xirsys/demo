@@ -1,6 +1,10 @@
 <h1>Many-to-many video</h1>
 <h4>A simple many-to-many video demo that connects to users manually</h4>
 
+<p>Link this demo to yourself or a friend:<br>
+  <%= link_to request.host + demo_path('many_to_many_video'), demo_path('many_to_many_video') %>
+<p>
+
 <% if @show_form %>
   <form class="form-horizontal">
     <div class="control-group">
@@ -19,10 +23,6 @@
     <input type="submit" value="Join" class="btn btn-primary btn-large"/>
   </form>
 <% else %>
-
-  <p>Link this demo to yourself or a friend:<br>
-    <%= link_to request.host + demo_path('many_to_many_video'), demo_path('many_to_many_video') %>
-  <p>
 
   <form class="form-horizontal">
     <div class="control-group">

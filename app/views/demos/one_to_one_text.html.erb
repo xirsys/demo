@@ -1,6 +1,10 @@
 <h1>One-to-one text</h1>
 <h4>A simple one-to-one text demo</h4>
 
+<p>Link this demo to yourself or a friend:<br>
+  <%= link_to request.host + demo_path('one_to_one_text'), demo_path('one_to_one_text') %>
+<p>
+
 <% if @show_form %>
   <form class="form-horizontal">
     <div class="control-group">
@@ -20,10 +24,6 @@
   </form>
 <% else %>
   
-  <p>Link this demo to yourself or a friend:<br>
-    <%= link_to request.host + demo_path('one_to_one_text'), demo_path('one_to_one_text') %>
-  <p>
-
   <form class="form-horizontal">
     <div class="control-group">
       <label for="userlist" class="control-label">Connect to a user</label>
