@@ -101,7 +101,7 @@
 				console.log('Connecting to participant...', contact);
 				// connect to remote peer
         $("#video-" + contact).remove();
-        utilsManyToManyVideo.room().connect(contact, { createDataChannel: 'auto' });
+        utilsManyToManyVideo.room().connect(contact, {});
 			});
 
 		});

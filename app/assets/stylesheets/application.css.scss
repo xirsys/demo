@@ -15,6 +15,10 @@
 // Import Font Awesome
 @import "font-awesome";
 
+html {
+  background-color: #EEEEEE;
+}
+
 ul {
   padding-left: 25px;
 }
@@ -45,6 +49,10 @@ ul {
   word-wrap: break-word;
   overflow: auto;
 }
+.text-chat#bottom {
+  width: 650px;
+  height: 24px;
+}
 .text-chat#message {
   width: 590px;
   height: 24px;
@@ -66,6 +74,9 @@ ul {
   -webkit-border-radius: 0 0 6px 0;
   -moz-border-radius: 0 0 6px 0;
   border-radius: 0 0 6px 0;
+  border-color: #79C705;
+  border-top: 0;
+  background-color: #79C705;
 }
 .text-chat-user {
   color: #79C705;

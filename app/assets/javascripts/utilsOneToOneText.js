@@ -155,7 +155,7 @@ var utilsOneToOneText = {};
       
 			var contacts = utilsOneToOneText.convertContacts(_room.getUsers());
 			for (var index = 0, len = contacts.length; index < len; index++) {
-				utilsOneToOneText.addParticipant(contacts[index]);
+				utilsOneToOneText.addUser(contacts[index]);
 			}
 		},
 
@@ -178,14 +178,14 @@ var utilsOneToOneText = {};
 		},
 
 		// Add remote peer name to drop-down list of contacts
-		addParticipant: function(participant) {
+		addUser: function(participant) {
 			$('#userlist').append(
 				'<option value="' + participant + '">' + participant + '</option>'
 			);
 		},
 
 		// Remove remote peer from drop-down list of contacts
-		removeParticipant: function(participant) {
+		removeUser: function(participant) {
 			$('#userlist').find('.option[value="' + participant + '"]').remove();
 		},
 
