@@ -38,8 +38,8 @@
 
 		$(document).ready(function() {
 
-      // initialise utilsJoinRoomTest object
-			utilsJoinRoomTest.init();
+      // initialise utilsJoinRoom object
+			utilsJoinRoom.init();
       
 			/**********************************
 			 *
@@ -49,15 +49,15 @@
 
 				// success and fail handlers for users local video/audio stream allocation
 				var getMediaSuccess = function (stream) {
-					utilsJoinRoomTest.addVideo({ stream: stream, isLocalStream: true, userId: gon.username });
-					utilsJoinRoomTest.localMediaStream( stream );
+					utilsJoinRoom.addVideo({ stream: stream, isLocalStream: true, userId: gon.username });
+					utilsJoinRoom.localMediaStream( stream );
 				};
 				var getMediaFailed = function (err) {
 					console.log('Get media stream error. ', err);
 				};
 
 				// request the local video and audio stream
-				utilsJoinRoomTest.getUserMedia(
+				utilsJoinRoom.getUserMedia(
 					{ video: true, audio: true },
 					getMediaSuccess,
 					getMediaFailed
@@ -70,24 +70,24 @@
 
 
 				// create XirSys objects needed to initialise a room
-				utilsJoinRoomTest.room( new xRtc.Room(roomInfo) );
+				utilsJoinRoom.room( new xRtc.Room(roomInfo) );
       
 				// assign events for updating the rooms user list
-				utilsJoinRoomTest.room().on( xRtc.Room.events.usersUpdated, utilsJoinRoomTest.refreshRoom )
-							.on( xRtc.Room.events.userConnected, utilsJoinRoomTest.refreshRoom )
-							.on( xRtc.Room.events.userDisconnected, utilsJoinRoomTest.refreshRoom )
-							.on( xRtc.Room.events.connectionDeclined, utilsJoinRoomTest.refreshRoom )
+				utilsJoinRoom.room().on( xRtc.Room.events.usersUpdated, utilsJoinRoom.refreshRoom )
+							.on( xRtc.Room.events.userConnected, utilsJoinRoom.refreshRoom )
+							.on( xRtc.Room.events.userDisconnected, utilsJoinRoom.refreshRoom )
+							.on( xRtc.Room.events.connectionDeclined, utilsJoinRoom.refreshRoom )
 							// more events for accepting a call and handling connection creation
-							.on( xRtc.Room.events.incomingConnection, utilsJoinRoomTest.acceptCall )
-							.on( xRtc.Room.events.connectionCreated, utilsJoinRoomTest.connectionCreated );
+							.on( xRtc.Room.events.incomingConnection, utilsJoinRoom.acceptCall )
+							.on( xRtc.Room.events.connectionCreated, utilsJoinRoom.connectionCreated );
 
 				// map all other default events
-				utilsJoinRoomTest.subscribe( utilsJoinRoomTest.room(), xRtc.Room.events );
+				utilsJoinRoom.subscribe( utilsJoinRoom.room(), xRtc.Room.events );
 
         
 
 				// Enter / open room
-				utilsJoinRoomTest.room().enter(gon.username, { autoReply: false });
+				utilsJoinRoom.room().enter(gon.username, { autoReply: false });
 
 			/**********************************
 			 *
@@ -100,7 +100,7 @@
 				var contact = $("#userlist").val();
 				console.log('Connecting to participant...', contact);
 				// connect to remote peer
-        utilsJoinRoomTest.room().connect(contact, { createDataChannel: 'auto' });
+        utilsJoinRoom.room().connect(contact, { createDataChannel: 'auto' });
 			});
 
 		});

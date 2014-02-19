@@ -30,7 +30,7 @@
 //= require 'xRtc/Stream'
 //= require 'xRtc/Room'
 
-//= require 'utilsJoinRoomTest'
+//= require 'utilsJoinRoom'
 //= require 'utilsOneToOneVideo'
 //= require 'utilsManyToManyVideo'
 //= require 'utilsOneToOneText'
