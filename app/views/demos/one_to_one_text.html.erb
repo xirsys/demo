@@ -45,7 +45,7 @@
       </div>
     </div>
     
-    <input id="message" type="text" name="input" class="text-chat"></input>
+    <input id="message" type="text" name="input" class="text-chat"></input><button id="send" class="btn btn-success btn-large text-chat">Send</button>
   </div>
 
   <script type="text/javascript">
@@ -108,6 +108,14 @@
 				console.log('Connecting to participant...', contact);
 				// connect to remote peer
         utilsOneToOneText.room().connect(contact, { createDataChannel: 'auto' });
+			});
+      
+      $("#send").click(function (e) {
+				e.preventDefault();
+        if ($("#message").val() != "") {
+          utilsOneToOneText.sendMessage($("#message").val());
+          $("#message").val("");
+        }
 			});
       
       // Hitting enter sends message if not empty

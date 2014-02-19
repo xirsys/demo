@@ -46,16 +46,26 @@ ul {
   overflow: auto;
 }
 .text-chat#message {
-  width: 650px;
+  width: 590px;
   height: 24px;
   margin: 0;
   border: 1px solid #79C705;
   border-top: 0;
+  border-right: 0;
   padding: 0 10px 0 10px;
-  -webkit-border-radius: 0 0 6px 6px;
-  -moz-border-radius: 0 0 6px 6px;
-  border-radius: 0 0 6px 6px;
+  -webkit-border-radius: 0 0 0 6px;
+  -moz-border-radius: 0 0 0 6px;
+  border-radius: 0 0 0 6px;
   background-color: #FFFFFF;
+}
+.text-chat#send {
+  width: 60px;
+  height: 24px;
+  padding: 0;
+  margin: 0;
+  -webkit-border-radius: 0 0 6px 0;
+  -moz-border-radius: 0 0 6px 0;
+  border-radius: 0 0 6px 0;
 }
 .text-chat-user {
   color: #79C705;
