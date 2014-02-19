@@ -49,12 +49,13 @@ ul {
   width: 650px;
   height: 24px;
   margin: 0;
-  border: 0;
+  border: 1px solid #79C705;
+  border-top: 0;
   padding: 0 10px 0 10px;
   -webkit-border-radius: 0 0 6px 6px;
   -moz-border-radius: 0 0 6px 6px;
   border-radius: 0 0 6px 6px;
-  background-color: #79C705;
+  background-color: #FFFFFF;
 }
 .text-chat-user {
   color: #79C705;
