@@ -2,8 +2,10 @@ class DemosController < ApplicationController
   
   def new
   end
-  
+    
   def get_ice_servers_test
+    puts (0..5).map { (65 + rand(26)).chr }.join
+    
     if params[:room] && params[:username]
       redirect_to getIceServers_xirsys_path(params)
     end
