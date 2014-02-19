@@ -1,39 +1,41 @@
 <!-- Add navigation links to this file -->
-<!-- <li><%= link_to 'Home', root_path %></li> -->
-<li><%= link_to 'Documentation', 'https://github.com/xirsys/rails' %></li>
+<li><%= link_to 'Home', root_path %></li>
 
+<!-- Simple tests -->
+<li class="dropdown">  
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown">Support <b class="caret"></b></a>
+  <ul class="dropdown-menu">
+    <li class="dropdown-header">We're here to help</li>
+    <li><%= link_to 'Documentation', 'http://xirsys.com/_static_content/xirsys.com/docs/index.php/Client%20Documentation%20(Beta)/Overview' %></li>
+    <li><%= link_to 'Contact us', demo_path('contact') %></li>
+  </ul>
+</li>
 
 <!-- Simple tests -->
 <li class="dropdown">  
   <a href="#" class="dropdown-toggle" data-toggle="dropdown">Simple tests <b class="caret"></b></a>
   <ul class="dropdown-menu">
+    <li class="dropdown-header">XirSys tests</li>
     <li><%= link_to 'Get ICE servers test', demo_path('get_ice_servers_test') %></li>
     <li><%= link_to 'Get token test', demo_path('get_token_test') %></li>
     <li><%= link_to 'Add room test', demo_path('add_room_test') %></li>
     <li><%= link_to 'Join room test', demo_path('join_room_test') %></li>
     <li class="divider"></li>
+    <li class="dropdown-header">External tests</li>
     <li><%= link_to 'Connectivity Check', 'http://check-connectivity.com' %></li>
   </ul>
 </li>
 
-<!-- Video chat demos -->
+<!-- Simple demos -->
 <li class="dropdown">
-  <a href="#" class="dropdown-toggle" data-toggle="dropdown">Video chat demos <b class="caret"></b></a>
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown">Simple demos <b class="caret"></b></a>
   <ul class="dropdown-menu">
+    <li class="dropdown-header">Video chat demos</li>
     <li><%= link_to 'One-to-one video', demo_path('one_to_one_video') %></li>
     <li><%= link_to 'Many-to-many video', demo_path('many_to_many_video') %></li>
-  </ul>
-</li>
-
-<!-- Text chat demos -->
-<li class="dropdown">
-  <a href="#" class="dropdown-toggle" data-toggle="dropdown">Text chat demos <b class="caret"></b></a>
-  <ul class="dropdown-menu">
+    <li class="divider"></li>
+    <li class="dropdown-header">Text chat demos</li>
     <li><%= link_to 'One-to-one text', demo_path('one_to_one_text') %></li>
     <!-- <li><%= link_to 'Many-to-many text', demo_path('many_to_many_text') %></li> -->
   </ul>
 </li>
-
-<li><a href="http://xirsys.com"><i class="fa fa-asterisk fa-lg button-social"></i></a></li>
-<li><a href="https://twitter.com/xirsys"><i class="fa fa-twitter fa-lg button-social"></i></a></li>
-<li><a href="https://github.com/xirsys"><i class="fa fa-github fa-lg button-social"></i></a></li>

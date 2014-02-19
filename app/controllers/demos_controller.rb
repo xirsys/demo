@@ -5,7 +5,10 @@ class DemosController < ApplicationController
   
   def new
   end
-    
+
+  def contact
+  end
+
   def get_ice_servers_test
     if params[:room] && params[:username]
       redirect_to getIceServers_xirsys_path(params)
