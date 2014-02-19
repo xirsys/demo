@@ -43,18 +43,8 @@ class DemosController < ApplicationController
       gon.username = params[:username]
     end
   end
-  
-  def many_to_many_video
-    @show_form = true;
     
-    if params[:room] && params[:username]
-      @show_form = false;
-      gon.room = params[:room]
-      gon.username = params[:username]
-    end
-  end
-  
-  def many_to_many_video_dynamic
+  def many_to_many_video
     @show_form = true;
     
     if params[:room] && params[:username]

@@ -24,7 +24,6 @@ XirsysRails::Application.routes.draw do
       # Video chat demos
       get '/one_to_one_video' => 'demos#one_to_one_video'
       get '/many_to_many_video' => 'demos#many_to_many_video'
-      get '/many_to_many_video_dynamic' => 'demos#many_to_many_video_dynamic'
       
       # Text chat demos
       get '/one_to_one_text' => 'demos#one_to_one_text'

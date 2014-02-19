@@ -7,8 +7,8 @@
  * establish connections as detailed in the demo HTML files.
  **/
 
-var utilsJoinRoom = {};
-(function (utilsJoinRoom, xrtc) {
+var utilsJoinRoomTest = {};
+(function (utilsJoinRoomTest, xrtc) {
 	var _av = false,
 		_room = null,
 		_userName = null,
@@ -17,7 +17,7 @@ var utilsJoinRoom = {};
 		_localMediaStream = null,
 		_remoteParticipantId = null;
 
-	xrtc.Class.extend(utilsJoinRoom, {
+	xrtc.Class.extend(utilsJoinRoomTest, {
 
 		init: function() {
 			// Set middle tier service proxies (on server)
@@ -74,9 +74,9 @@ var utilsJoinRoom = {};
 			roomInfo = _room.getInfo();
 			$('#userlist').empty();
 
-			var contacts = utilsJoinRoom.convertContacts(_room.getUsers());
+			var contacts = utilsJoinRoomTest.convertContacts(_room.getUsers());
 			for (var index = 0, len = contacts.length; index < len; index++) {
-				utilsJoinRoom.addParticipant(contacts[index]);
+				utilsJoinRoomTest.addParticipant(contacts[index]);
 			}
 		},
 
@@ -120,4 +120,4 @@ var utilsJoinRoom = {};
 
 	});
 
-})(utilsJoinRoom, xRtc);
+})(utilsJoinRoomTest, xRtc);
