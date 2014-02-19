@@ -1,11 +1,12 @@
 class DemosController < ApplicationController
   
+  # Generates a random username for each demo
+  before_action :generate_random_username
+  
   def new
   end
     
   def get_ice_servers_test
-    puts (0..5).map { (65 + rand(26)).chr }.join
-    
     if params[:room] && params[:username]
       redirect_to getIceServers_xirsys_path(params)
     end
@@ -82,5 +83,12 @@ class DemosController < ApplicationController
       gon.username = params[:username]
     end
   end
+
+  private
   
+  # Generates a random username for each demo
+  def generate_random_username
+    @username = (0...5).map { (65 + rand(26)).chr }.join.downcase
+  end
+
 end
