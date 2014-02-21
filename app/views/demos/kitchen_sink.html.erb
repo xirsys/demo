@@ -16,7 +16,7 @@
     <div class="control-group">
       <label for="username" class="control-label">Username</label>
       <div class="controls">
-        <input type="text" id="username" name="username" value="<%= @username %>"/>
+        <input type="text" id="username" name="username"/>
       </div>
     </div>
     <br>
@@ -62,6 +62,9 @@
     // Initially hide connect form
     $('#form-connect').hide()
 
+    // Randomize username in form
+    $("#username").val(randomizeUsername());
+    
     // initialise utilsManyToMany object
 	  utilsManyToMany.init();
       
@@ -156,5 +159,15 @@
     });
 
   });
+  
+  function randomizeUsername() {
+    var username = "";
+    var possible = "abcdefghijklmnopqrstuvwxyz";
+
+    for( var i=0; i < 5; i++ )
+        username += possible.charAt(Math.floor(Math.random() * possible.length));
+
+    return username;
+  }
 
 </script>

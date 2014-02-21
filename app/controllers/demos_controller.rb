@@ -1,8 +1,5 @@
 class DemosController < ApplicationController
   
-  # Generates a random username for each demo
-  before_action :generate_random_username
-  
   def new
   end
 
@@ -43,13 +40,6 @@ class DemosController < ApplicationController
   end
   
   def kitchen_sink
-  end
-
-  private
-  
-  # Generates a random username for each demo
-  def generate_random_username
-    @username = (0...5).map { (65 + rand(26)).chr }.join.downcase
   end
 
 end
