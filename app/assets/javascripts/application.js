@@ -35,6 +35,7 @@
 //= require 'utilsManyToManyVideo'
 //= require 'utilsOneToOneText'
 //= require 'utilsManyToManyText'
+//= require 'utilsKitchenSink'
 
 //= require_tree .
 

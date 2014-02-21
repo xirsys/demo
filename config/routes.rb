@@ -31,6 +31,9 @@ XirsysRails::Application.routes.draw do
       # Text chat demos
       get '/one_to_one_text' => 'demos#one_to_one_text'
       get '/many_to_many_text' => 'demos#many_to_many_text'
+      
+      # Multifunctional demos
+      get '/kitchen_sink' => 'demos#kitchen_sink'
     end
   end
 

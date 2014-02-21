@@ -76,6 +76,16 @@ class DemosController < ApplicationController
       gon.username = params[:username]
     end
   end
+  
+  def kitchen_sink
+    @show_form = true;
+    
+    if params[:room] && params[:username]
+      @show_form = false;
+      gon.room = params[:room]
+      gon.username = params[:username]
+    end
+  end
 
   private
   
