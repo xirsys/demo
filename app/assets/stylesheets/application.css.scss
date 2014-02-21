@@ -82,6 +82,12 @@ ul {
   border-top: 0;
   background-color: #79C705;
 }
+/* Firefox has an unexplainable vertical gap here */
+@-moz-document url-prefix() {
+  .text-chat#send {
+    margin-top: -2px;
+  }
+}
 .text-chat-user {
   color: #79C705;
 }
