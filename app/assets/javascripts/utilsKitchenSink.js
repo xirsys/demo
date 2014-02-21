@@ -1,6 +1,6 @@
 /**
- * Author: Lee Sylvester
- * Copyright: XirSys 2013
+ * Authors: Lee Sylvester, Alex Thomas
+ * Copyright: XirSys 2014
  * 
  * Description: This utilities file encapsulates the users list functionality. It is
  * contained within this file so as to not clutter the important steps required to
@@ -19,11 +19,10 @@ var utilsKitchenSink = {};
 
 	xrtc.Class.extend(utilsKitchenSink, {
 
+    // Set middle tier service proxies (on server)
+	  // This is the server page which handles the calls 
+		// to the XirSys services
 		init: function() {
-			// Set middle tier service proxies (on server)
-			// This is the server page which handles the calls 
-			// to the XirSys services
-
 			xrtc.AuthManager.settings.tokenHandler = "/xirsys/getToken";
 			xrtc.AuthManager.settings.iceHandler = "/xirsys/getIceServers";
 
@@ -58,9 +57,10 @@ var utilsKitchenSink = {};
 		},
 
 		// Utility functions
-
-		// Proxy getUserMedia so we can log if video / audio is being requested
+    
+		// Proxy getUserMedia so we can log if video / audio are being requested
 		getUserMedia: function(data, success, fail) {
+      // Comment this out if you don't want a microphone / webcam request
 		  xrtc.getUserMedia(
 			  data,
 			  success,
@@ -82,7 +82,7 @@ var utilsKitchenSink = {};
 				// On remote stream, assign to video DOM object and refresh users list
 				.on( xrtc.Connection.events.remoteStreamAdded, function (data) {
 					data.isLocalStream = false;
-					console.log("adding remote stream");
+					console.log("Adding remote stream");
 					utilsKitchenSink.addVideo(data);
 					utilsKitchenSink.refreshRoom();
 				})
@@ -91,6 +91,7 @@ var utilsKitchenSink = {};
 					utilsKitchenSink.refreshRoom();
 				})
 				// Handler for simple chat demo's data channel
+        // _textChannel is an array to handle multiple users
 				.on( xrtc.Connection.events.dataChannelCreated, function (data) {
           var remoteUser = data.channel.getRemoteUser().name;
 					_textChannel[remoteUser] = data.channel;
@@ -103,7 +104,7 @@ var utilsKitchenSink = {};
 					utilsKitchenSink.addMessage("XirSys", "You connected with " + remoteUser + ".");
           
 				}).on(xrtc.Connection.events.dataChannelCreationError, function(data) {
-					console.log('Failed to create data channel ' + data.channelName + '. Make sure that your Chrome M25 or later with --enable-data-channels flag.');
+					console.log('Failed to create data channel ' + data.channelName + '. Make sure that you are using Chrome M25 or later with --enable-data-channels flag.');
 				})
 				// Assign empty handlers
         // You may wish to add real functionality here
@@ -113,7 +114,7 @@ var utilsKitchenSink = {};
           utilsKitchenSink.addMessage("XirSys", "You disconnected from " + data.user.name + ".");
           var userId = data.user.id;
           delete _textChannel[userId]
-          
+
           // Remove video element of disconnecting user
           $("#video-" + userId).remove();
         });
@@ -126,15 +127,14 @@ var utilsKitchenSink = {};
 		addVideo: function(data) {
 			var stream = data.stream;
       var userId;
-      
+
       if (data.isLocalStream) {
         userId = data.userId;
       } else {
         userId = data.user.id;
       }
 
-			// var video = (data.isLocalStream) ? $('#vid1').get(0) : $('#vid2').get(0);
-
+      // Assigns a stream to a video slot dynamically using participant's name
 			var video;
       if (data.isLocalStream) {
         $("#video-slots").append("<video class='many-to-many' id='video-local'></video>")
@@ -147,27 +147,36 @@ var utilsKitchenSink = {};
       
 			stream.assignTo(video);
 
+      // If it's your own stream, mute it
 			if ( data.isLocalStream ) {
 				video.volume = 0;
 			}
 		},
 
 		sendMessage: function (message) {
-			console.log('Sending message...', message);
+      console.log('Sending message:', message);
       
       // Add your own message to the chat box
       utilsKitchenSink.addMessage(roomInfo.user.name, message, true);
       
-      Object.keys(_textChannel).forEach(function (key) {
-        if (_textChannel[key]) {
-          _textChannel[key].send(message);
-        } else {
-          console.log('DataChannel is not created. Please, see log.');
-        }
-      })
-
+      // Only send a message if you have people to send messages to
+      var textChannelSize = Object.keys(_textChannel).length;
+            
+      if (textChannelSize == 0) {
+        utilsKitchenSink.addMessage("XirSys", "No one can hear you right now.");
+      } else {
+        Object.keys(_textChannel).forEach(function (key) {
+          if (_textChannel[key]) {
+            _textChannel[key].send(message);
+          } else {
+            console.log('DataChannel is not created. Please see log.');
+          }
+        })
+      }
+      
 		},
 
+    // Adds a message to local chat box
 		addMessage: function (name, message, isMy) {
 			var $chat = $('#chatwindow');
       $chat.append("<div class='text-chat-line'><text class='text-chat-user'>" + name + ":</text> " + message + "</div>");
@@ -176,11 +185,11 @@ var utilsKitchenSink = {};
       $chat[0].scrollTop = $chat[0].scrollHeight;
 		},
 
-		// Update drop-down list of remote peers
+		// Update list of remote peers
 		refreshRoom: function() {
 			roomInfo = _room.getInfo();
 			$('#userlist').empty();
-      
+
 			var contacts = utilsKitchenSink.convertContacts(_room.getUsers());
 			for (var index = 0, len = contacts.length; index < len; index++) {
 				utilsKitchenSink.addUser(contacts[index]);
@@ -190,6 +199,13 @@ var utilsKitchenSink = {};
 		// Call accept on incoming stream
 		acceptCall: function(incomingConnectionData) {
 			incomingConnectionData.accept();
+      
+      // You can code in a popup here that asks user if he wants to accept the call
+      // if (confirm('You are getting a call from ' + incomingConnectionData.user.name + '. Would you like to answer?')) {
+			//   incomingConnectionData.accept();
+			// } else {
+			//	 incomingConnectionData.decline();
+			// }
 		},
 
 		// Return a list of participants excluding local user's name
@@ -198,7 +214,7 @@ var utilsKitchenSink = {};
 
 			for (var i = 0, len = participants.length; i < len; i++) {
 				var name = participants[i];
-				if ( !!name && name.id != gon.username )
+				if ( !!name && name.id != $("#username").val() )
 					contacts.push(name.id);
 			}
 
@@ -229,8 +245,8 @@ var utilsKitchenSink = {};
 				}
 			}
 		},
-    
-    // Tests if conditions are good for establishing a connection
+
+    // Only connects if there isn't already an existing connection with participant
 		preConnect: function(participant) {
       if (!_textChannel[participant]) {
         utilsKitchenSink.room().connect(participant, { createDataChannel: 'auto' });

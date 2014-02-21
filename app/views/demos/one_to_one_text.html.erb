@@ -6,7 +6,7 @@
 <p>
 
 <% if @show_form %>
-  <form class="form-horizontal">
+  <form class="form-horizontal" id="form-join">
     <div class="control-group">
       <label for="room" class="control-label">Room</label>
       <div class="controls">
@@ -20,8 +20,8 @@
       </div>
     </div>
     <br>
-    <input type="submit" value="Join" class="btn btn-primary btn-large"/>
   </form>
+  <button id="button-join" class="btn btn-primary btn-large">Join</button>
 <% else %>
   
   <form class="form-horizontal">

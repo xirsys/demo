@@ -28,63 +28,21 @@ class DemosController < ApplicationController
   end
   
   def join_room_test
-    @show_form = true;
-    
-    if params[:room] && params[:username]
-      @show_form = false;
-      gon.room = params[:room]
-      gon.username = params[:username]
-    end
   end
   
   def one_to_one_video
-    @show_form = true;
-    
-    if params[:room] && params[:username]
-      @show_form = false;
-      gon.room = params[:room]
-      gon.username = params[:username]
-    end
   end
     
   def many_to_many_video
-    @show_form = true;
-    
-    if params[:room] && params[:username]
-      @show_form = false;
-      gon.room = params[:room]
-      gon.username = params[:username]
-    end
   end
   
   def one_to_one_text
-    @show_form = true;
-    
-    if params[:room] && params[:username]
-      @show_form = false;
-      gon.room = params[:room]
-      gon.username = params[:username]
-    end
   end
   
   def many_to_many_text
-    @show_form = true;
-    
-    if params[:room] && params[:username]
-      @show_form = false;
-      gon.room = params[:room]
-      gon.username = params[:username]
-    end
   end
   
   def kitchen_sink
-    @show_form = true;
-    
-    if params[:room] && params[:username]
-      @show_form = false;
-      gon.room = params[:room]
-      gon.username = params[:username]
-    end
   end
 
   private
