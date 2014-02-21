@@ -82,6 +82,7 @@
 			};
 
 			// Requests the local video and audio stream
+      // Comment this out if you don't want a microphone / webcam request
 			utilsManyToMany.getUserMedia(
 				{ video: true, audio: true },
 				getMediaSuccess,
