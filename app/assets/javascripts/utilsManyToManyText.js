@@ -109,8 +109,9 @@ var utilsManyToManyText = {};
         // You may wish to add real functionality here
 				.on( xrtc.Connection.events.localStreamAdded, function (data) { })
 				.on( xrtc.Connection.events.connectionEstablished, function (data) { })
-				.on( xrtc.Connection.events.connectionClosed, function (data) { 
+				.on( xrtc.Connection.events.connectionClosed, function (data) {
           utilsManyToManyText.addMessage("XirSys", "You disconnected from " + data.user.name + ".");
+          delete _textChannel[data.user.name]
         });
 
 			if (_av)
@@ -207,7 +208,14 @@ var utilsManyToManyText = {};
 					})(events[eventPropertyName]);
 				}
 			}
-		}
+		},
+    
+    // Tests if conditions are good for establishing a connection
+		preConnect: function(participant) {
+      if (!_textChannel[participant]) {
+        utilsManyToManyText.room().connect(participant, { createDataChannel: 'auto' });
+      }
+    }
 
 	});
 
