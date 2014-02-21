@@ -60,7 +60,6 @@ var utilsManyToMany = {};
     
 		// Proxy getUserMedia so we can log if video / audio are being requested
 		getUserMedia: function(data, success, fail) {
-      // Comment this out if you don't want a microphone / webcam request
 		  xrtc.getUserMedia(
 			  data,
 			  success,

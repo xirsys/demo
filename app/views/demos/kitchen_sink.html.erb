@@ -38,6 +38,7 @@
 
   <br>
 
+  <!-- Video chat -->
   <div id="video-slots">
 	</div>
 
@@ -65,13 +66,13 @@
     // Randomize username in form
     $("#username").val(randomizeUsername());
     
-    // initialise utilsManyToMany object
+    // Initialize utilsManyToMany object
 	  utilsManyToMany.init();
       
     $("#button-join").click(function(e) {
 		  e.preventDefault();
       
-		  // success and fail handlers for users local video/audio stream allocation
+		  // Success and fail handlers for user's local video / audio stream allocation
 			var getMediaSuccess = function (stream) {
 				utilsManyToMany.addVideo({ stream: stream, isLocalStream: true, userId: $('#username').val() });
 				utilsManyToMany.localMediaStream( stream );
@@ -80,33 +81,33 @@
 				console.log('Get media stream error. ', err);
 			};
 
-			// request the local video and audio stream
+			// Requests the local video and audio stream
 			utilsManyToMany.getUserMedia(
 				{ video: true, audio: true },
 				getMediaSuccess,
 				getMediaFailed
 			);
 
-			// room information object / container
+			// Room information object / container
 			var roomInfo = {
         name: $('#room').val()
 			};
 
 
-			// create XirSys objects needed to initialise a room
+			// Create the XirSys objects needed to initialize a room
 			utilsManyToMany.room( new xRtc.Room(roomInfo) );
       
-			// assign events for updating the rooms user list
+			// Assign events for updating the room's users list
 			utilsManyToMany.room().on( xRtc.Room.events.usersUpdated, utilsManyToMany.refreshRoom )
 		    .on( xRtc.Room.events.userConnected, utilsManyToMany.refreshRoom )
 				.on( xRtc.Room.events.userDisconnected, utilsManyToMany.refreshRoom )
 				.on( xRtc.Room.events.connectionDeclined, utilsManyToMany.refreshRoom )
-			  // more events for accepting a call and handling connection creation
+			  // More events for accepting a call and handling connection creation
 				.on( xRtc.Room.events.incomingConnection, utilsManyToMany.acceptCall )
 				.on( xRtc.Room.events.connectionCreated, utilsManyToMany.connectionCreated )
         .on( xRtc.Room.events.enter, utilsManyToMany.enterRoom );
 
-		  // map all other default events
+		  // Map all other default events
 			utilsManyToMany.subscribe( utilsManyToMany.room(), xRtc.Room.events );
 
 			// Enter / open room
@@ -118,14 +119,9 @@
       $('#form-connect').show()
     });
 
-		/**********************************
-		*
-		*   Handles connect button click
-		*
-		**********************************/
+    // Handles connect button click
 	  $("#connect").click(function (e) {
 			e.preventDefault();
-			// get username of remote peer
         
       // Grab room participants from list
       var participants = [];
@@ -133,13 +129,14 @@
         participants.push($(elem).text());
       });
         
-		  console.log('Connecting to participants...');
-		  // connect to remote peer
+		  console.log('Connecting to participants');
+		  // Connect to remote peer
       for (var i = 0; i < participants.length; i++) {
         utilsManyToMany.preConnect(participants[i], { createDataChannel: 'auto' });
       }
 	  });
-      
+    
+    // Sends a message
     $("#send").click(function (e) {
 		  e.preventDefault();
       if ($("#message").val() != "") {
@@ -147,7 +144,7 @@
         $("#message").val("");
       }
 		});
-      
+
     // Hitting enter sends message if not empty
     $("#message").keyup(function(event){
       if(event.keyCode == 13){
@@ -159,7 +156,8 @@
     });
 
   });
-  
+
+  // Randomizes username for form
   function randomizeUsername() {
     var username = "";
     var possible = "abcdefghijklmnopqrstuvwxyz";
