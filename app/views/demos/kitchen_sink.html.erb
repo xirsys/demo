@@ -1,4 +1,4 @@
-<h1>Kitchen sink</h1>
+<h1>Kitchen sink™</h1>
 <h4>A simple many-to-many video and text chat demo that connects to users dynamically</h4>
 
 <p>Link this demo to yourself or a friend:<br>
@@ -55,106 +55,106 @@
   </div>
 </div>
 
-  <script type="text/javascript">
+<script type="text/javascript">
 
-		$(document).ready(function() {
+  $(document).ready(function() {
       
-      // Initially hide connect form
-      $('#form-connect').hide()
+    // Initially hide connect form
+    $('#form-connect').hide()
 
-      // initialise utilsKitchenSink object
-			utilsKitchenSink.init();
+    // initialise utilsManyToMany object
+	  utilsManyToMany.init();
       
-      $("#button-join").click(function(e) {
-				e.preventDefault();
+    $("#button-join").click(function(e) {
+		  e.preventDefault();
       
-				// success and fail handlers for users local video/audio stream allocation
-				var getMediaSuccess = function (stream) {
-					utilsKitchenSink.addVideo({ stream: stream, isLocalStream: true, userId: gon.username });
-					utilsKitchenSink.localMediaStream( stream );
-				};
-				var getMediaFailed = function (err) {
-					console.log('Get media stream error. ', err);
-				};
+		  // success and fail handlers for users local video/audio stream allocation
+			var getMediaSuccess = function (stream) {
+				utilsManyToMany.addVideo({ stream: stream, isLocalStream: true, userId: $('#username').val() });
+				utilsManyToMany.localMediaStream( stream );
+			};
+			var getMediaFailed = function (err) {
+				console.log('Get media stream error. ', err);
+			};
 
-				// request the local video and audio stream
-				utilsKitchenSink.getUserMedia(
-					{ video: true, audio: true },
-					getMediaSuccess,
-					getMediaFailed
-				);
+			// request the local video and audio stream
+			utilsManyToMany.getUserMedia(
+				{ video: true, audio: true },
+				getMediaSuccess,
+				getMediaFailed
+			);
 
-				// room information object / container
-				var roomInfo = {
-          name: $('#room').val()
-				};
+			// room information object / container
+			var roomInfo = {
+        name: $('#room').val()
+			};
 
 
-				// create XirSys objects needed to initialise a room
-				utilsKitchenSink.room( new xRtc.Room(roomInfo) );
+			// create XirSys objects needed to initialise a room
+			utilsManyToMany.room( new xRtc.Room(roomInfo) );
       
-				// assign events for updating the rooms user list
-				utilsKitchenSink.room().on( xRtc.Room.events.usersUpdated, utilsKitchenSink.refreshRoom )
-							.on( xRtc.Room.events.userConnected, utilsKitchenSink.refreshRoom )
-							.on( xRtc.Room.events.userDisconnected, utilsKitchenSink.refreshRoom )
-							.on( xRtc.Room.events.connectionDeclined, utilsKitchenSink.refreshRoom )
-							// more events for accepting a call and handling connection creation
-							.on( xRtc.Room.events.incomingConnection, utilsKitchenSink.acceptCall )
-							.on( xRtc.Room.events.connectionCreated, utilsKitchenSink.connectionCreated );
+			// assign events for updating the rooms user list
+			utilsManyToMany.room().on( xRtc.Room.events.usersUpdated, utilsManyToMany.refreshRoom )
+		    .on( xRtc.Room.events.userConnected, utilsManyToMany.refreshRoom )
+				.on( xRtc.Room.events.userDisconnected, utilsManyToMany.refreshRoom )
+				.on( xRtc.Room.events.connectionDeclined, utilsManyToMany.refreshRoom )
+			  // more events for accepting a call and handling connection creation
+				.on( xRtc.Room.events.incomingConnection, utilsManyToMany.acceptCall )
+				.on( xRtc.Room.events.connectionCreated, utilsManyToMany.connectionCreated )
+        .on( xRtc.Room.events.enter, utilsManyToMany.enterRoom );
 
-				// map all other default events
-				utilsKitchenSink.subscribe( utilsKitchenSink.room(), xRtc.Room.events );
+		  // map all other default events
+			utilsManyToMany.subscribe( utilsManyToMany.room(), xRtc.Room.events );
 
-				// Enter / open room
-				utilsKitchenSink.room().enter($("#username").val(), { autoReply: false });
-        utilsKitchenSink.username($("#username").val());
+			// Enter / open room
+			utilsManyToMany.room().enter($("#username").val(), { autoReply: false });
+      utilsManyToMany.username($("#username").val());
         
-        // Hide join form and button
-        $('#form-join').hide()
-        $('#form-connect').show()
+      // Hide join form and button
+      $('#form-join').hide()
+      $('#form-connect').show()
+    });
+
+		/**********************************
+		*
+		*   Handles connect button click
+		*
+		**********************************/
+	  $("#connect").click(function (e) {
+			e.preventDefault();
+			// get username of remote peer
+        
+      // Grab room participants from list
+      var participants = [];
+      $('li.participant').each(function(i, elem) {
+        participants.push($(elem).text());
       });
-
-			/**********************************
-			 *
-			 *   Handles connect button click
-			 *
-			 **********************************/
-			$("#connect").click(function (e) {
-				e.preventDefault();
-				// get username of remote peer
         
-        // Grab room participants from list
-        var participants = [];
-        $('li.participant').each(function(i, elem) {
-            participants.push($(elem).text());
-        });
-        
-				console.log('Connecting to participants...');
-				// connect to remote peer
-        for (var i = 0; i < participants.length; i++) {
-          utilsKitchenSink.preConnect(participants[i], { createDataChannel: 'auto' });
-        }
-			});
+		  console.log('Connecting to participants...');
+		  // connect to remote peer
+      for (var i = 0; i < participants.length; i++) {
+        utilsManyToMany.preConnect(participants[i], { createDataChannel: 'auto' });
+      }
+	  });
       
-      $("#send").click(function (e) {
-				e.preventDefault();
-        if ($("#message").val() != "") {
-          utilsKitchenSink.sendMessage($("#message").val());
-          $("#message").val("");
-        }
-			});
-      
-      // Hitting enter sends message if not empty
-      $("#message").keyup(function(event){
-        if(event.keyCode == 13){
-          if (this.value != "") {
-            utilsKitchenSink.sendMessage($("#message").val());
-            this.value = "";
-          }
-        }
-      });
-
+    $("#send").click(function (e) {
+		  e.preventDefault();
+      if ($("#message").val() != "") {
+        utilsManyToMany.sendMessage($("#message").val());
+        $("#message").val("");
+      }
 		});
+      
+    // Hitting enter sends message if not empty
+    $("#message").keyup(function(event){
+      if(event.keyCode == 13){
+        if (this.value != "") {
+          utilsManyToMany.sendMessage($("#message").val());
+          this.value = "";
+        }
+      }
+    });
 
-	</script>
+  });
 
+</script>

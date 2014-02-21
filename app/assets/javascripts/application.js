@@ -31,11 +31,7 @@
 //= require 'xrtc/room'
 
 //= require 'utilsJoinRoom'
-//= require 'utilsOneToOneVideo'
-//= require 'utilsManyToManyVideo'
-//= require 'utilsOneToOneText'
-//= require 'utilsManyToManyText'
-//= require 'utilsKitchenSink'
+//= require 'utilsManyToMany'
 
 //= require_tree .
 
