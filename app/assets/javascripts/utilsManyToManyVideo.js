@@ -95,7 +95,7 @@ var utilsManyToManyVideo = {};
 					_textChannel = data.channel;
 					utilsManyToManyVideo.subscribe(_textChannel, xrtc.DataChannel.events);
 					_textChannel.on( xrtc.DataChannel.events.message, function(msgData) {
-						utilsManyToManyVideo.addMessage(msgData.userId, msgData.message);
+						utilsManyToManyVideo.addMessage(msgData.userId, msgData.data);
 					});
 					utilsManyToManyVideo.addMessage("SYSTEM", "You are now connected.");
 

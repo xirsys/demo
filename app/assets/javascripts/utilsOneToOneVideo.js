@@ -61,10 +61,10 @@ var utilsOneToOneVideo = {};
 
 		// Proxy getUserMedia so we can log if video / audio is being requested
 		getUserMedia: function(data, success, fail) {
-			xrtc.getUserMedia(
-				data,
-				success,
-				fail
+		  xrtc.getUserMedia(
+			  data,
+			  success,
+			  fail
 			);
 			_av = true;
 		},
@@ -94,11 +94,14 @@ var utilsOneToOneVideo = {};
 				.on( xrtc.Connection.events.dataChannelCreated, function (data) {
 					_textChannel = data.channel;
 					utilsOneToOneVideo.subscribe(_textChannel, xrtc.DataChannel.events);
-					_textChannel.on( xrtc.DataChannel.events.message, function(msgData) {
-						utilsOneToOneVideo.addMessage(msgData.userId, msgData.message);
+					_textChannel.on( xrtc.DataChannel.events.sentMessage, function(msgData) {
+						utilsOneToOneVideo.addMessage(roomInfo.user.name, msgData.data, true);
+					}).on(xrtc.DataChannel.events.receivedMessage, function (msgData) {
+						utilsOneToOneVideo.addMessage(_textChannel.getRemoteUser().name, msgData.data);
 					});
-					utilsOneToOneVideo.addMessage("SYSTEM", "You are now connected.");
-
+          
+					utilsOneToOneVideo.addMessage("XirSys", "You connected with " + _textChannel.getRemoteUser().name + ".");
+          
 				}).on(xrtc.Connection.events.dataChannelCreationError, function(data) {
 					console.log('Failed to create data channel ' + data.channelName + '. Make sure that your Chrome M25 or later with --enable-data-channels flag.');
 				})
@@ -106,7 +109,9 @@ var utilsOneToOneVideo = {};
         // You may wish to add real functionality here
 				.on( xrtc.Connection.events.localStreamAdded, function (data) { })
 				.on( xrtc.Connection.events.connectionEstablished, function (data) { })
-				.on( xrtc.Connection.events.connectionClosed, function (data) { });
+				.on( xrtc.Connection.events.connectionClosed, function (data) { 
+          utilsOneToOneVideo.addMessage("XirSys", "You disconnected from " + data.user.name + ".");
+        });
 
 			if (_av)
 				_connection.addStream(_localMediaStream);
@@ -130,7 +135,6 @@ var utilsOneToOneVideo = {};
 			console.log('Sending message...', message);
 			if (_textChannel) {
 				_textChannel.send(message);
-				utilsOneToOneVideo.addMessage( _userName, message, true );
 			} else {
 				console.log('DataChannel is not created. Please, see log.');
 			}
@@ -138,10 +142,10 @@ var utilsOneToOneVideo = {};
 
 		addMessage: function (name, message, isMy) {
 			var $chat = $('#chatwindow');
-
-			$chat
-				.append("<div><span>" + name + " : </span>" + message + "</div>")
-				.scrollTop($chat.children().last().position().top + $chat.children().last().height());
+      $chat.append("<div class='text-chat-line'><text class='text-chat-user'>" + name + ":</text> " + message + "</div>");
+      
+      // Fixes chat scrolling behavior
+      $chat[0].scrollTop = $chat[0].scrollHeight;
 		},
 
 		// Update drop-down list of remote peers
@@ -151,7 +155,7 @@ var utilsOneToOneVideo = {};
       
 			var contacts = utilsOneToOneVideo.convertContacts(_room.getUsers());
 			for (var index = 0, len = contacts.length; index < len; index++) {
-				utilsOneToOneVideo.addParticipant(contacts[index]);
+				utilsOneToOneVideo.addUser(contacts[index]);
 			}
 		},
 
@@ -174,14 +178,14 @@ var utilsOneToOneVideo = {};
 		},
 
 		// Add remote peer name to drop-down list of contacts
-		addParticipant: function(participant) {
+		addUser: function(participant) {
 			$('#userlist').append(
 				'<option value="' + participant + '">' + participant + '</option>'
 			);
 		},
 
 		// Remove remote peer from drop-down list of contacts
-		removeParticipant: function(participant) {
+		removeUser: function(participant) {
 			$('#userlist').find('.option[value="' + participant + '"]').remove();
 		},
 

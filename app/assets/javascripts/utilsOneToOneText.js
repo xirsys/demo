@@ -95,9 +95,9 @@ var utilsOneToOneText = {};
 					_textChannel = data.channel;
 					utilsOneToOneText.subscribe(_textChannel, xrtc.DataChannel.events);
 					_textChannel.on( xrtc.DataChannel.events.sentMessage, function(msgData) {
-						utilsOneToOneText.addMessage(roomInfo.user.name, msgData.message, true);
+						utilsOneToOneText.addMessage(roomInfo.user.name, msgData.data, true);
 					}).on(xrtc.DataChannel.events.receivedMessage, function (msgData) {
-								utilsOneToOneText.addMessage(_textChannel.getRemoteUser().name, msgData.message);
+						utilsOneToOneText.addMessage(_textChannel.getRemoteUser().name, msgData.data);
 					});
           
 					utilsOneToOneText.addMessage("XirSys", "You connected with " + _textChannel.getRemoteUser().name + ".");

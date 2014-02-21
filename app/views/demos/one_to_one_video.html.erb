@@ -102,7 +102,7 @@
 				var contact = $("#userlist").val();
 				console.log('Connecting to participant...', contact);
 				// connect to remote peer
-        utilsOneToOneVideo.room().connect(contact, {});
+        utilsOneToOneVideo.room().connect(contact, { createDataChannel: 'auto' });
 			});
 
 		});
