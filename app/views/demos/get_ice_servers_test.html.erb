@@ -11,9 +11,29 @@
   <div class="control-group">
     <label for="username" class="control-label">Username</label>
     <div class="controls">
-      <input type="text" id="username" name="username" value="<%= @username %>"/>
+      <input type="text" id="username" name="username"/>
     </div>
   </div>
   <br>
   <input type="submit" value="Test" class="btn btn-primary btn-large"/>
 </form>
+
+<script type="text/javascript">
+  
+  $(document).ready(function() {
+    // Randomize username in form
+    $("#username").val(randomizeUsername());
+  });
+  
+  // Randomizes username for form
+  function randomizeUsername() {
+    var username = "";
+    var possible = "abcdefghijklmnopqrstuvwxyz";
+
+    for( var i=0; i < 5; i++ )
+        username += possible.charAt(Math.floor(Math.random() * possible.length));
+
+    return username;
+  }
+  
+</script>

@@ -30,7 +30,7 @@
 //= require 'xrtc/stream'
 //= require 'xrtc/room'
 
-//= require 'utilsJoinRoom'
+//= require 'utilsTest'
 //= require 'utilsOneToOne'
 //= require 'utilsManyToMany'
 

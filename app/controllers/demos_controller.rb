@@ -24,6 +24,18 @@ class DemosController < ApplicationController
     end
   end
   
+  def add_application_test
+    if params[:application]
+      redirect_to addApplication_xirsys_path(params)
+    end
+  end
+  
+  def add_domain_test
+    if params[:domain]
+      redirect_to addDomain_xirsys_path(params)
+    end
+  end
+  
   def join_room_test
   end
   

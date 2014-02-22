@@ -5,9 +5,29 @@
   <div class="control-group">
     <label for="room" class="control-label">Room</label>
     <div class="controls">
-      <input type="text" id="room" name="room" value="default"/>
+      <input type="text" id="room" name="room"/>
     </div>
   </div>
   <br>
   <input type="submit" value="Test" class="btn btn-primary btn-large"/>
 </form>
+
+<script type="text/javascript">
+  
+  $(document).ready(function() {
+    // Randomize username in form
+    $("#room").val(randomizeRoom());
+  });
+  
+  // Randomizes username for form
+  function randomizeRoom() {
+    var room = "";
+    var possible = "abcdefghijklmnopqrstuvwxyz";
+
+    for( var i=0; i < 5; i++ )
+        room += possible.charAt(Math.floor(Math.random() * possible.length));
+
+    return room;
+  }
+  
+</script>

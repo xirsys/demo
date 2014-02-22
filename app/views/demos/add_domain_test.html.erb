@@ -1,0 +1,33 @@
+<h1>Add domain test</h1>
+<h4>A simple test that checks if your server is properly configured to dynamically create XirSys domains</h4>
+
+<form class="form-horizontal">
+  <div class="control-group">
+    <label for="domain" class="control-label">Domain</label>
+    <div class="controls">
+      <input type="text" id="domain" name="domain"/>
+    </div>
+  </div>
+  <br>
+  <input type="submit" value="Test" class="btn btn-primary btn-large"/>
+</form>
+
+<script type="text/javascript">
+  
+  $(document).ready(function() {
+    // Randomize username in form
+    $("#domain").val(randomizeDomain());
+  });
+  
+  // Randomizes username for form
+  function randomizeDomain() {
+    var domain = "";
+    var possible = "abcdefghijklmnopqrstuvwxyz";
+
+    for( var i=0; i < 5; i++ )
+        domain += possible.charAt(Math.floor(Math.random() * possible.length));
+
+    return "www." + domain + ".com";
+  }
+  
+</script>

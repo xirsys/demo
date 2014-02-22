@@ -9,6 +9,10 @@ XirsysRails::Application.routes.draw do
       post 'getToken'
       get  'addRoom'
       post 'addRoom'
+      get  'addApplication'
+      post 'addApplication'
+      get  'addDomain'
+      post 'addDomain'
     end
   end
   
@@ -22,6 +26,8 @@ XirsysRails::Application.routes.draw do
       get '/get_token_test' => 'demos#get_token_test'
       get '/get_ice_servers_test' => 'demos#get_ice_servers_test'
       get '/add_room_test' => 'demos#add_room_test'
+      get '/add_application_test' => 'demos#add_application_test'
+      get '/add_domain_test' => 'demos#add_domain_test'
       get '/join_room_test' => 'demos#join_room_test'
       
       # Video chat demos

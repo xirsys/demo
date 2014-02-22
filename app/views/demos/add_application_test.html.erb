@@ -1,0 +1,33 @@
+<h1>Add application test</h1>
+<h4>A simple test that checks if your server is properly configured to dynamically create XirSys applications</h4>
+
+<form class="form-horizontal">
+  <div class="control-group">
+    <label for="application" class="control-label">Application</label>
+    <div class="controls">
+      <input type="text" id="application" name="application"/>
+    </div>
+  </div>
+  <br>
+  <input type="submit" value="Test" class="btn btn-primary btn-large"/>
+</form>
+
+<script type="text/javascript">
+  
+  $(document).ready(function() {
+    // Randomize username in form
+    $("#application").val(randomizeApplication());
+  });
+  
+  // Randomizes username for form
+  function randomizeApplication() {
+    var application = "";
+    var possible = "abcdefghijklmnopqrstuvwxyz";
+
+    for( var i=0; i < 5; i++ )
+        application += possible.charAt(Math.floor(Math.random() * possible.length));
+
+    return application;
+  }
+  
+</script>
