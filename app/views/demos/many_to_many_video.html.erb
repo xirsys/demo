@@ -43,7 +43,7 @@
 	</div>
 
   <!-- Text chat -->
-  <!-- <div id="container-text" class="text-chat">
+  <div id="container-text" class="text-chat hide">
 
     <div id="chatwindow-outer" class="text-chat">
       <div id="chatwindow" class="text-chat">
@@ -53,7 +53,7 @@
     <div id="bottom" class="text-chat">
       <input id="message" type="text" name="input" class="text-chat"></input><button id="send" class="btn btn-success btn-large text-chat">Send</button>
     </div>
-  </div> -->
+  </div>
 </div>
 
 <script type="text/javascript">
@@ -133,7 +133,7 @@
 		  console.log('Connecting to participants');
 		  // Connect to remote peer
       for (var i = 0; i < participants.length; i++) {
-        utilsManyToMany.preConnect(participants[i], { createDataChannel: 'auto' });
+        utilsManyToMany.preConnect(participants[i]);
       }
 	  });
     

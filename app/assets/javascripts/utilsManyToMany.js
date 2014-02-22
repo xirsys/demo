@@ -112,7 +112,7 @@ var utilsManyToMany = {};
 				.on( xrtc.Connection.events.connectionClosed, function (data) {
           utilsManyToMany.addMessage("XirSys", "You disconnected from " + data.user.name + ".");
           var userId = data.user.id;
-          delete _textChannel[userId]
+          delete _textChannel[userId];
 
           // Remove video element of disconnecting user
           $("#video-" + userId).remove();

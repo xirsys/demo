@@ -1,29 +1,28 @@
 /**
- * Author: Lee Sylvester
- * Copyright: XirSys 2013
+ * Authors: Lee Sylvester, Alex Thomas
+ * Copyright: XirSys 2014
  * 
  * Description: This utilities file encapsulates the users list functionality. It is
  * contained within this file so as to not clutter the important steps required to
  * establish connections as detailed in the demo HTML files.
  **/
 
-var utilsOneToOneVideo = {};
-(function (utilsOneToOneVideo, xrtc) {
+var utilsOneToOne = {};
+(function (utilsOneToOne, xrtc) {
 	var _av = false,
 		_room = null,
 		_userName = null,
-		_textChannel = null,
+		_textChannel = [],
 		_connection = null,
 		_localMediaStream = null,
 		_remoteParticipantId = null;
 
-	xrtc.Class.extend(utilsOneToOneVideo, {
+	xrtc.Class.extend(utilsOneToOne, {
 
+    // Set middle tier service proxies (on server)
+	  // This is the server page which handles the calls 
+		// to the XirSys services
 		init: function() {
-			// Set middle tier service proxies (on server)
-			// This is the server page which handles the calls 
-			// to the XirSys services
-
 			xrtc.AuthManager.settings.tokenHandler = "/xirsys/getToken";
 			xrtc.AuthManager.settings.iceHandler = "/xirsys/getIceServers";
 
@@ -58,8 +57,8 @@ var utilsOneToOneVideo = {};
 		},
 
 		// Utility functions
-
-		// Proxy getUserMedia so we can log if video / audio is being requested
+    
+		// Proxy getUserMedia so we can log if video / audio are being requested
 		getUserMedia: function(data, success, fail) {
 		  xrtc.getUserMedia(
 			  data,
@@ -74,7 +73,7 @@ var utilsOneToOneVideo = {};
 			_connection = connectionData.connection;
 			_remoteParticipantId = connectionData.userId;
 
-			utilsOneToOneVideo.subscribe( _connection, xrtc.Connection.events );
+			utilsOneToOne.subscribe( _connection, xrtc.Connection.events );
 
 			var data = _connection.getData();
 
@@ -82,35 +81,41 @@ var utilsOneToOneVideo = {};
 				// On remote stream, assign to video DOM object and refresh users list
 				.on( xrtc.Connection.events.remoteStreamAdded, function (data) {
 					data.isLocalStream = false;
-					console.log("adding remote stream");
-					utilsOneToOneVideo.addVideo(data);
-					utilsOneToOneVideo.refreshRoom();
+					console.log("Adding remote stream");
+					utilsOneToOne.addVideo(data);
+					utilsOneToOne.refreshRoom();
 				})
 				// Update users list on state change
 				.on( xrtc.Connection.events.stateChanged, function (state) {
-					utilsOneToOneVideo.refreshRoom();
+					utilsOneToOne.refreshRoom();
 				})
 				// Handler for simple chat demo's data channel
+        // _textChannel is an array to handle multiple users
 				.on( xrtc.Connection.events.dataChannelCreated, function (data) {
-					_textChannel = data.channel;
-					utilsOneToOneVideo.subscribe(_textChannel, xrtc.DataChannel.events);
-					_textChannel.on( xrtc.DataChannel.events.sentMessage, function(msgData) {
-						utilsOneToOneVideo.addMessage(roomInfo.user.name, msgData.data, true);
+          var remoteUser = data.channel.getRemoteUser().name;
+					_textChannel[remoteUser] = data.channel;
+					utilsOneToOne.subscribe(_textChannel[remoteUser], xrtc.DataChannel.events);
+					_textChannel[remoteUser].on( xrtc.DataChannel.events.sentMessage, function(msgData) {
 					}).on(xrtc.DataChannel.events.receivedMessage, function (msgData) {
-						utilsOneToOneVideo.addMessage(_textChannel.getRemoteUser().name, msgData.data);
+						utilsOneToOne.addMessage(_textChannel[remoteUser].getRemoteUser().name, msgData.data);
 					});
           
-					utilsOneToOneVideo.addMessage("XirSys", "You connected with " + _textChannel.getRemoteUser().name + ".");
+					utilsOneToOne.addMessage("XirSys", "You connected with " + remoteUser + ".");
           
 				}).on(xrtc.Connection.events.dataChannelCreationError, function(data) {
-					console.log('Failed to create data channel ' + data.channelName + '. Make sure that your Chrome M25 or later with --enable-data-channels flag.');
+					console.log('Failed to create data channel ' + data.channelName + '. Make sure that you are using Chrome M25 or later with --enable-data-channels flag.');
 				})
 				// Assign empty handlers
         // You may wish to add real functionality here
 				.on( xrtc.Connection.events.localStreamAdded, function (data) { })
 				.on( xrtc.Connection.events.connectionEstablished, function (data) { })
-				.on( xrtc.Connection.events.connectionClosed, function (data) { 
-          utilsOneToOneVideo.addMessage("XirSys", "You disconnected from " + data.user.name + ".");
+				.on( xrtc.Connection.events.connectionClosed, function (data) {
+          utilsOneToOne.addMessage("XirSys", "You disconnected from " + data.user.name + ".");
+          var userId = data.user.id;
+          delete _textChannel[userId];
+
+          // Remove video element of disconnecting user
+          $("#video-" + userId).remove();
         });
 
 			if (_av)
@@ -120,26 +125,57 @@ var utilsOneToOneVideo = {};
 		// Assign stream to a video DOM tag
 		addVideo: function(data) {
 			var stream = data.stream;
-			var userId = data.userId;
+      var userId;
 
-			var video = (data.isLocalStream) ? $('#vid1').get(0) : $('#vid2').get(0);
+      if (data.isLocalStream) {
+        userId = data.userId;
+      } else {
+        userId = data.user.id;
+      }
 
+      // Assigns a stream to a video slot dynamically using participant's name
+			var video;
+      if (data.isLocalStream) {
+        $("#video-slots").append("<video class='many-to-many' id='video-local'></video>")
+        video = $('#video-local').get(0);
+      } else {
+        // Add a new video element with connection credentials
+        $("#video-slots").append("<video class='many-to-many' id='video-" + userId + "'></video>")
+        video = $('#video-' + userId).get(0);
+      }
+      
 			stream.assignTo(video);
 
+      // If it's your own stream, mute it
 			if ( data.isLocalStream ) {
 				video.volume = 0;
 			}
 		},
 
 		sendMessage: function (message) {
-			console.log('Sending message...', message);
-			if (_textChannel) {
-				_textChannel.send(message);
-			} else {
-				console.log('DataChannel is not created. Please, see log.');
-			}
+      console.log('Sending message:', message);
+      
+      // Add your own message to the chat box
+      utilsOneToOne.addMessage(roomInfo.user.name, message, true);
+      
+      // Only send a message if you have people to send messages to
+      var textChannelSize = Object.keys(_textChannel).length;
+            
+      if (textChannelSize == 0) {
+        utilsOneToOne.addMessage("XirSys", "No one can hear you right now.");
+      } else {
+        Object.keys(_textChannel).forEach(function (key) {
+          if (_textChannel[key]) {
+            _textChannel[key].send(message);
+          } else {
+            console.log('DataChannel is not created. Please see log.');
+          }
+        })
+      }
+      
 		},
 
+    // Adds a message to local chat box
 		addMessage: function (name, message, isMy) {
 			var $chat = $('#chatwindow');
       $chat.append("<div class='text-chat-line'><text class='text-chat-user'>" + name + ":</text> " + message + "</div>");
@@ -148,20 +184,27 @@ var utilsOneToOneVideo = {};
       $chat[0].scrollTop = $chat[0].scrollHeight;
 		},
 
-		// Update drop-down list of remote peers
+		// Update list of remote peers
 		refreshRoom: function() {
 			roomInfo = _room.getInfo();
 			$('#userlist').empty();
-      
-			var contacts = utilsOneToOneVideo.convertContacts(_room.getUsers());
+
+			var contacts = utilsOneToOne.convertContacts(_room.getUsers());
 			for (var index = 0, len = contacts.length; index < len; index++) {
-				utilsOneToOneVideo.addUser(contacts[index]);
+				utilsOneToOne.addUser(contacts[index]);
 			}
 		},
 
 		// Call accept on incoming stream
 		acceptCall: function(incomingConnectionData) {
 			incomingConnectionData.accept();
+      
+      // You can code in a popup here that asks user if he wants to accept the call
+      // if (confirm('You are getting a call from ' + incomingConnectionData.user.name + '. Would you like to answer?')) {
+			//   incomingConnectionData.accept();
+			// } else {
+			//	 incomingConnectionData.decline();
+			// }
 		},
 
 		// Return a list of participants excluding local user's name
@@ -170,7 +213,7 @@ var utilsOneToOneVideo = {};
 
 			for (var i = 0, len = participants.length; i < len; i++) {
 				var name = participants[i];
-				if ( !!name && name.id != gon.username )
+				if ( !!name && name.id != $("#username").val() )
 					contacts.push(name.id);
 			}
 
@@ -180,7 +223,7 @@ var utilsOneToOneVideo = {};
 		// Add remote peer name to drop-down list of contacts
 		addUser: function(participant) {
 			$('#userlist').append(
-				'<option value="' + participant + '">' + participant + '</option>'
+				'<option class="participant" value="' + participant + '">' + participant + '</option>'
 			);
 		},
 
@@ -200,8 +243,26 @@ var utilsOneToOneVideo = {};
 					})(events[eventPropertyName]);
 				}
 			}
-		}
+		},
+
+    // Only connects if there isn't already an existing connection with participant
+		preConnect: function(participant) {
+      
+      // Remove all existing connections
+      if (_connection) {
+        _connection.close();
+      }
+      
+      if (!_textChannel[participant]) {
+        utilsOneToOne.room().connect(participant, { createDataChannel: 'auto' });
+      }
+    },
+    
+    // Only connects if there isn't already an existing connection with participant
+		enterRoom: function(participant) {
+      utilsOneToOne.addMessage("XirSys", "You Joined the room as " + _userName + ".");
+    }
 
 	});
 
-})(utilsOneToOneVideo, xRtc);
+})(utilsOneToOne, xRtc);

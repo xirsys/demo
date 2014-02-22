@@ -5,8 +5,8 @@
   <%= link_to request.host + demo_path('one_to_one_text'), demo_path('one_to_one_text') %>
 <p>
 
-<% if @show_form %>
-  <form class="form-horizontal" id="form-join">
+<div id="form-join">
+  <form class="form-horizontal">
     <div class="control-group">
       <label for="room" class="control-label">Room</label>
       <div class="controls">
@@ -16,14 +16,15 @@
     <div class="control-group">
       <label for="username" class="control-label">Username</label>
       <div class="controls">
-        <input type="text" id="username" name="username" value="<%= @username %>"/>
+        <input type="text" id="username" name="username"/>
       </div>
     </div>
     <br>
   </form>
   <button id="button-join" class="btn btn-primary btn-large">Join</button>
-<% else %>
-  
+</div>
+
+<div id="form-connect">
   <form class="form-horizontal">
     <div class="control-group">
       <label for="userlist" class="control-label">Connect to a user</label>
@@ -37,6 +38,10 @@
 
   <br>
 
+  <!-- Video chat -->
+  <!-- <div id="video-slots">
+	</div> -->
+
   <!-- Text chat -->
   <div id="container-text" class="text-chat">
 
@@ -49,89 +54,112 @@
       <input id="message" type="text" name="input" class="text-chat"></input><button id="send" class="btn btn-success btn-large text-chat">Send</button>
     </div>
   </div>
+</div>
 
-  <script type="text/javascript">
+<script type="text/javascript">
 
-		$(document).ready(function() {
-
-      // initialise utilsOneToOneText object
-			utilsOneToOneText.init();
+  $(document).ready(function() {
       
-				// success and fail handlers for users local video/audio stream allocation
-				var getMediaSuccess = function (stream) {
-					utilsOneToOneText.addVideo({ stream: stream, isLocalStream: true, userId: gon.username });
-					utilsOneToOneText.localMediaStream( stream );
-				};
-				var getMediaFailed = function (err) {
-					console.log('Get media stream error. ', err);
-				};
+    // Initially hide connect form
+    $('#form-connect').hide()
 
-				// request the local video and audio stream
-				utilsOneToOneText.getUserMedia(
-					{ video: true, audio: true },
-					getMediaSuccess,
-					getMediaFailed
-				);
-
-				// room information object / container
-				var roomInfo = {
-          name: gon.room
-				};
-
-				// create XirSys objects needed to initialise a room
-				utilsOneToOneText.room( new xRtc.Room(roomInfo) );
+    // Randomize username in form
+    $("#username").val(randomizeUsername());
+    
+    // Initialize utilsOneToOne object
+	  utilsOneToOne.init();
       
-				// assign events for updating the rooms user list
-				utilsOneToOneText.room().on( xRtc.Room.events.usersUpdated, utilsOneToOneText.refreshRoom )
-							.on( xRtc.Room.events.userConnected, utilsOneToOneText.refreshRoom )
-							.on( xRtc.Room.events.userDisconnected, utilsOneToOneText.refreshRoom )
-							.on( xRtc.Room.events.connectionDeclined, utilsOneToOneText.refreshRoom )
-							// more events for accepting a call and handling connection creation
-							.on( xRtc.Room.events.incomingConnection, utilsOneToOneText.acceptCall )
-							.on( xRtc.Room.events.connectionCreated, utilsOneToOneText.connectionCreated );
+    $("#button-join").click(function(e) {
+		  e.preventDefault();
+      
+		  // Success and fail handlers for user's local video / audio stream allocation
+			var getMediaSuccess = function (stream) {
+				utilsOneToOne.addVideo({ stream: stream, isLocalStream: true, userId: $('#username').val() });
+				utilsOneToOne.localMediaStream( stream );
+			};
+			var getMediaFailed = function (err) {
+				console.log('Get media stream error. ', err);
+			};
 
-				// map all other default events
-				utilsOneToOneText.subscribe( utilsOneToOneText.room(), xRtc.Room.events );
+			// Requests the local video and audio stream
+      // Comment this out if you don't want a microphone / webcam request
+      // utilsOneToOne.getUserMedia(
+      //	 { video: true, audio: true },
+      //	 getMediaSuccess,
+      //	 getMediaFailed
+      // );
 
+			// Room information object / container
+			var roomInfo = {
+        name: $('#room').val()
+			};
+
+
+			// Create the XirSys objects needed to initialize a room
+			utilsOneToOne.room( new xRtc.Room(roomInfo) );
+      
+			// Assign events for updating the room's users list
+			utilsOneToOne.room().on( xRtc.Room.events.usersUpdated, utilsOneToOne.refreshRoom )
+		    .on( xRtc.Room.events.userConnected, utilsOneToOne.refreshRoom )
+				.on( xRtc.Room.events.userDisconnected, utilsOneToOne.refreshRoom )
+				.on( xRtc.Room.events.connectionDeclined, utilsOneToOne.refreshRoom )
+			  // More events for accepting a call and handling connection creation
+				.on( xRtc.Room.events.incomingConnection, utilsOneToOne.acceptCall )
+				.on( xRtc.Room.events.connectionCreated, utilsOneToOne.connectionCreated )
+        .on( xRtc.Room.events.enter, utilsOneToOne.enterRoom );
+
+		  // Map all other default events
+			utilsOneToOne.subscribe( utilsOneToOne.room(), xRtc.Room.events );
+
+			// Enter / open room
+			utilsOneToOne.room().enter($("#username").val(), { autoReply: false });
+      utilsOneToOne.username($("#username").val());
         
+      // Hide join form and button
+      $('#form-join').hide()
+      $('#form-connect').show()
+    });
 
-				// Enter / open room
-				utilsOneToOneText.room().enter(gon.username, { autoReply: false });
-
-			/**********************************
-			 *
-			 *   Handles connect button click
-			 *
-			 **********************************/
-			$("#connect").click(function (e) {
-				e.preventDefault();
-				// get username of remote peer
-				var contact = $("#userlist").val();
-				console.log('Connecting to participant...', contact);
-				// connect to remote peer
-        utilsOneToOneText.room().connect(contact, { createDataChannel: 'auto' });
-			});
-      
-      $("#send").click(function (e) {
-				e.preventDefault();
-        if ($("#message").val() != "") {
-          utilsOneToOneText.sendMessage($("#message").val());
-          $("#message").val("");
-        }
-			});
-      
-      // Hitting enter sends message if not empty
-      $("#message").keyup(function(event){
-        if(event.keyCode == 13){
-          if (this.value != "") {
-            utilsOneToOneText.sendMessage($("#message").val());
-            this.value = "";
-          }
-        }
-      });
-
+    // Handles connect button click
+	  $("#connect").click(function (e) {
+			e.preventDefault();
+        
+      var contact = $("#userlist").val();
+      console.log('Connecting to participant:', contact);
+			// Connects to remote peer
+      utilsOneToOne.preConnect(contact);
+	  });
+    
+    // Sends a message
+    $("#send").click(function (e) {
+		  e.preventDefault();
+      if ($("#message").val() != "") {
+        utilsOneToOne.sendMessage($("#message").val());
+        $("#message").val("");
+      }
 		});
 
-	</script>
+    // Hitting enter sends message if not empty
+    $("#message").keyup(function(event){
+      if(event.keyCode == 13){
+        if (this.value != "") {
+          utilsOneToOne.sendMessage($("#message").val());
+          this.value = "";
+        }
+      }
+    });
 
-<% end %>
+  });
+
+  // Randomizes username for form
+  function randomizeUsername() {
+    var username = "";
+    var possible = "abcdefghijklmnopqrstuvwxyz";
+
+    for( var i=0; i < 5; i++ )
+        username += possible.charAt(Math.floor(Math.random() * possible.length));
+
+    return username;
+  }
+
+</script>

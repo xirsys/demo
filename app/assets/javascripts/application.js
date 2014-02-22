@@ -31,6 +31,7 @@
 //= require 'xrtc/room'
 
 //= require 'utilsJoinRoom'
+//= require 'utilsOneToOne'
 //= require 'utilsManyToMany'
 
 //= require_tree .
