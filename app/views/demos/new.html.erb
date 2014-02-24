@@ -1,4 +1,37 @@
 <h1>XirSys Diagnostic Tool</h1>
-<h4>A toolbox filled with simple tests and demos that ensure<br>
-your server is properly configured to talk with XirSys</h4>
+<h2>A toolbox filled with simple tests and demos that both ensures<br>
+your server is properly configured to talk with XirSys and helps<br>
+you understand our service enough to quickly develop and deploy<br>
+your WebRTC product</h2>
 
+<br>
+
+<h4>If you have any questions, please feel free to <%= link_to 'contact us', 'http://xirsys.com/contact-us' %>.<br>
+We're here to help. And we'll always go that extra mile<br>
+to help your dream become a reality. [=</h4>
+
+<br>
+
+<h3>Simple tests</h3>
+<h4>XirSys tests</h4>
+<li><%= link_to 'Get ICE servers test', demo_path('get_ice_servers_test') %></li>
+<li><%= link_to 'Get token test', demo_path('get_token_test') %></li>
+<li><%= link_to 'Add room test', demo_path('add_room_test') %></li>
+<li><%= link_to 'Add application test', demo_path('add_application_test') %></li>
+<li><%= link_to 'Add domain test', demo_path('add_domain_test') %></li>
+<h4>Presence tests</h4>
+<li><%= link_to 'Join room test', demo_path('join_room_test') %></li>
+<h4>External tests</h4>
+<li><%= link_to 'Connectivity Check', 'http://check-connectivity.com' %></li>
+
+<br>
+
+<h3>Simple demos</h3>
+<h4>Video chat demos</h4>
+<li><%= link_to 'One-to-one video', demo_path('one_to_one_video') %></li>
+<li><%= link_to 'Many-to-many video', demo_path('many_to_many_video') %></li>
+<h4>Text chat demos</h4>
+<li><%= link_to 'One-to-one text', demo_path('one_to_one_text') %></li>
+<li><%= link_to 'Many-to-many text', demo_path('many_to_many_text') %></li>
+<h4>Multifunctional demos</h4>
+<li><%= link_to 'Kitchen Sink™', demo_path('kitchen_sink') %></li>
