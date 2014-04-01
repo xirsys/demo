@@ -136,11 +136,11 @@ var utilsManyToMany = {};
       // Assigns a stream to a video slot dynamically using participant's name
 			var video;
       if (data.isLocalStream) {
-        $("#video-slots").append("<video class='many-to-many' id='video-local'></video>")
+        $("#video-slots").append("<video class='many-to-many' id='video-local' autoplay></video>")
         video = $('#video-local').get(0);
       } else {
         // Add a new video element with connection credentials
-        $("#video-slots").append("<video class='many-to-many' id='video-" + userId + "'></video>")
+        $("#video-slots").append("<video class='many-to-many' id='video-" + userId + "' autoplay></video>")
         video = $('#video-' + userId).get(0);
       }
       
