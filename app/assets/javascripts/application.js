@@ -29,6 +29,7 @@
 //= require 'xRtc/Connection'
 //= require 'xRtc/Stream'
 //= require 'xRtc/Room'
+//= require 'xRtc/dependencies/binarypack'
 
 //= require 'utilsTest'
 //= require 'utilsOneToOne'
