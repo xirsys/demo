@@ -254,7 +254,7 @@ var utilsManyToMany = {};
     
     // Only connects if there isn't already an existing connection with participant
 		enterRoom: function(participant) {
-      utilsManyToMany.addMessage("XirSys", "You Joined the room as " + _userName + ".");
+      utilsManyToMany.addMessage("XirSys", "You joined room " + _room.getInfo().name + " as " + _userName + ".");
     }
 
 	});
