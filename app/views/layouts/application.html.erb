@@ -2,26 +2,20 @@
 <html>
   <head>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title><%= content_for?(:title) ? yield(:title) : "XirSys Diagnostic Tool" %></title>
+    <title><%= content_for?(:title) ? yield(:title) : "XirSys Rails Demo" %></title>
     
     <%= include_gon %>
     
-    <meta name="description" content="<%= content_for?(:description) ? yield(:description) : "XirSys Diagnostic Tool" %>">
+    <meta name="description" content="<%= content_for?(:description) ? yield(:description) : "XirSys Rails Demo" %>">
     <%= stylesheet_link_tag "application", media: "all", "data-turbolinks-track" => true %>
     <%= javascript_include_tag "application", "data-turbolinks-track" => true %>
     <%= csrf_meta_tags %>
   </head>
   <body>
     <header>
-      <%= render 'layouts/navigation' %>
     </header>
-    <main role="main">
-       <%= render 'layouts/messages' %>
-       <br><br>
-       <div class="row">
-         <div class="col-md-2"></div>
-         <div class="col-md-10"><%= yield %></div>
-      </div>
-    </main>
+    
+    <%= yield %>
+
   </body>
 </html>

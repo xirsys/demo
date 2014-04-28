@@ -1,37 +1,169 @@
-<h1>XirSys Diagnostic Tool</h1>
-<h2>A toolbox filled with simple tests and demos that both ensures<br>
-your server is properly configured to talk with XirSys and helps<br>
-you understand our service enough to quickly develop and deploy<br>
-your WebRTC product</h2>
+<p>Link this demo to yourself or a friend: <a href="http://xirsys.com/demo" target="_blank">http://xirsys.com/demo</a><br>
+  Fork it on <a href="https://github.com/xirsys/demo" target="_blank">GitHub</a>!
+</p>
 
-<br>
+<div id="form-join">
+  <form class="form-horizontal">
+    <div class="control-group">
+      <label for="room" class="control-label">Room</label>
+      <div class="controls">
+        <input type="text" id="room" name="room" value="default"/>
+      </div>
+    </div>
+    <div class="control-group">
+      <label for="username" class="control-label">Username</label>
+      <div class="controls">
+        <input type="text" id="username" name="username"/>
+      </div>
+    </div>
+    <br>
+  </form>
+  <button id="button-join" class="btn btn-primary btn-large">Join</button>
+</div>
 
-<h4>If you have any questions, please feel free to <%= link_to 'contact us', 'http://xirsys.com/contact-us' %>.<br>
-We're here to help. And we'll always go that extra mile<br>
-to help your dream become a reality. [=</h4>
+<div id="form-connect">
+  <form class="form-horizontal">
+    <div class="control-group">
+      <label for="userlist" class="control-label">Other users in this room</label>
+      <div class="controls">
+        <ul id="userlist">
+        </ul>
+      </div>
+    </div>
+    <button id="connect" class="btn btn-primary btn-large">Connect</button>
+  </form>
 
-<br>
+  <br>
 
-<h3>Simple tests</h3>
-<h4>XirSys tests</h4>
-<li><%= link_to 'Get ICE servers test', demo_path('get_ice_servers_test') %></li>
-<li><%= link_to 'Get token test', demo_path('get_token_test') %></li>
-<li><%= link_to 'Add room test', demo_path('add_room_test') %></li>
-<li><%= link_to 'Add application test', demo_path('add_application_test') %></li>
-<li><%= link_to 'Add domain test', demo_path('add_domain_test') %></li>
-<h4>Presence tests</h4>
-<li><%= link_to 'Join room test', demo_path('join_room_test') %></li>
-<h4>External tests</h4>
-<li><%= link_to 'Connectivity Check', 'http://check-connectivity.com' %></li>
+  <!-- Video chat -->
+  <div id="video-slots">
+	</div>
 
-<br>
+  <!-- Text chat -->
+  <div id="container-text" class="text-chat">
 
-<h3>Simple demos</h3>
-<h4>Video chat demos</h4>
-<li><%= link_to 'One-to-one video', demo_path('one_to_one_video') %></li>
-<li><%= link_to 'Many-to-many video', demo_path('many_to_many_video') %></li>
-<h4>Text chat demos</h4>
-<li><%= link_to 'One-to-one text', demo_path('one_to_one_text') %></li>
-<li><%= link_to 'Many-to-many text', demo_path('many_to_many_text') %></li>
-<h4>Multifunctional demos</h4>
-<li><%= link_to 'Kitchen Sink™', demo_path('kitchen_sink') %></li>
+    <div id="chatwindow-outer" class="text-chat">
+      <div id="chatwindow" class="text-chat">
+      </div>
+    </div>
+    
+    <div id="bottom" class="text-chat">
+      <input id="message" type="text" name="input" class="text-chat"></input><button id="send" class="btn btn-success btn-large text-chat">Send</button>
+    </div>
+  </div>
+</div>
+
+<script type="text/javascript">
+
+  $(document).ready(function() {
+      
+    // Initially hide connect form
+    $('#form-connect').hide()
+
+    // Randomize username in form
+    $("#username").val(randomizeUsername());
+    
+    // Initialize utilsManyToMany object
+	  utilsManyToMany.init();
+      
+    $("#button-join").click(function(e) {
+		  e.preventDefault();
+      
+		  // Success and fail handlers for user's local video / audio stream allocation
+			var getMediaSuccess = function (stream) {
+				utilsManyToMany.addVideo({ stream: stream, isLocalStream: true, userId: $('#username').val() });
+				utilsManyToMany.localMediaStream( stream );
+			};
+			var getMediaFailed = function (err) {
+				console.log('Get media stream error. ', err);
+			};
+
+			// Requests the local video and audio stream
+      // Comment this out if you don't want a microphone / webcam request
+			utilsManyToMany.getUserMedia(
+				{ video: true, audio: true },
+				getMediaSuccess,
+				getMediaFailed
+			);
+
+			// Room information object / container
+			var roomInfo = {
+        name: $('#room').val()
+			};
+
+
+			// Create the XirSys objects needed to initialize a room
+			utilsManyToMany.room( new xRtc.Room(roomInfo) );
+      
+			// Assign events for updating the room's users list
+			utilsManyToMany.room().on( xRtc.Room.events.usersUpdated, utilsManyToMany.refreshRoom )
+		    .on( xRtc.Room.events.userConnected, utilsManyToMany.refreshRoom )
+				.on( xRtc.Room.events.userDisconnected, utilsManyToMany.refreshRoom )
+				.on( xRtc.Room.events.connectionDeclined, utilsManyToMany.refreshRoom )
+			  // More events for accepting a call and handling connection creation
+				.on( xRtc.Room.events.incomingConnection, utilsManyToMany.acceptCall )
+				.on( xRtc.Room.events.connectionCreated, utilsManyToMany.connectionCreated )
+        .on( xRtc.Room.events.enter, utilsManyToMany.enterRoom );
+
+		  // Map all other default events
+			utilsManyToMany.subscribe( utilsManyToMany.room(), xRtc.Room.events );
+
+			// Enter / open room
+			utilsManyToMany.room().enter($("#username").val(), { autoReply: false });
+      utilsManyToMany.username($("#username").val());
+        
+      // Hide join form and button
+      $('#form-join').hide()
+      $('#form-connect').show()
+    });
+
+    // Handles connect button click
+	  $("#connect").click(function (e) {
+			e.preventDefault();
+        
+      // Grab room participants from list
+      var participants = [];
+      $('li.participant').each(function(i, elem) {
+        participants.push($(elem).text());
+      });
+        
+		  console.log('Connecting to participants');
+		  // Connect to remote peer
+      for (var i = 0; i < participants.length; i++) {
+        utilsManyToMany.preConnect(participants[i], { createDataChannel: 'auto' });
+      }
+	  });
+    
+    // Sends a message
+    $("#send").click(function (e) {
+		  e.preventDefault();
+      if ($("#message").val() != "") {
+        utilsManyToMany.sendMessage($("#message").val());
+        $("#message").val("");
+      }
+		});
+
+    // Hitting enter sends message if not empty
+    $("#message").keyup(function(event){
+      if(event.keyCode == 13){
+        if (this.value != "") {
+          utilsManyToMany.sendMessage($("#message").val());
+          this.value = "";
+        }
+      }
+    });
+
+  });
+
+  // Randomizes username for form
+  function randomizeUsername() {
+    var username = "";
+    var possible = "abcdefghijklmnopqrstuvwxyz";
+
+    for( var i=0; i < 5; i++ )
+        username += possible.charAt(Math.floor(Math.random() * possible.length));
+
+    return username;
+  }
+
+</script>
