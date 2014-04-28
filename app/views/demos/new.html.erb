@@ -90,7 +90,16 @@
 			var roomInfo = {
         name: $('#room').val()
 			};
-
+      
+      // Create room on XirSys
+      $.ajax({
+        type: "POST",
+        url: "/xirsys/addRoom",
+        data: "room=" + roomInfo.name,
+        dataType: "json",
+        success: function(data) {
+        }
+      });
 
 			// Create the XirSys objects needed to initialize a room
 			utilsManyToMany.room( new xRtc.Room(roomInfo) );
